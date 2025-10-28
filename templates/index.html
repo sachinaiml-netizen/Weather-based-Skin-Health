@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather-based Skin Health</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>☀️ Weather-based Skin Health</h1>
+            <p class="subtitle">Get personalized skincare recommendations based on your local weather</p>
+        </header>
+
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" id="cityInput" placeholder="Enter your city name..." />
+                <button id="searchBtn" onclick="getRecommendations()">Get Recommendations</button>
+            </div>
+            <div id="loading" class="loading hidden">
+                <div class="spinner"></div>
+                <p>Analyzing weather conditions...</p>
+            </div>
+        </div>
+
+        <div id="results" class="results hidden">
+            <!-- Weather Info Card -->
+            <div class="weather-card">
+                <h2>Current Weather</h2>
+                <div class="weather-info">
+                    <div class="weather-main">
+                        <h3 id="cityName"></h3>
+                        <div class="temp-display">
+                            <span id="temperature" class="temperature"></span>
+                            <span class="weather-icon" id="weatherIcon">🌤️</span>
+                        </div>
+                        <p id="weatherDescription" class="weather-description"></p>
+                    </div>
+                    <div class="weather-details">
+                        <div class="detail-item">
+                            <span class="detail-label">💧 Humidity:</span>
+                            <span id="humidity" class="detail-value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">💨 Wind Speed:</span>
+                            <span id="windSpeed" class="detail-value"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Skincare Tips Card -->
+            <div class="recommendations-card">
+                <h2>🌸 Skincare Tips for Today</h2>
+                <ul id="skincareTips" class="tips-list"></ul>
+            </div>
+
+            <!-- Product Recommendations Card -->
+            <div class="products-card">
+                <h2>🧴 Recommended Products</h2>
+                <ul id="productsRecommended" class="products-list"></ul>
+            </div>
+
+            <!-- Warnings Card -->
+            <div id="warningsCard" class="warnings-card hidden">
+                <h2>⚠️ Important Warnings</h2>
+                <ul id="warnings" class="warnings-list"></ul>
+            </div>
+        </div>
+
+        <div id="error" class="error-message hidden"></div>
+
+        <footer>
+            <p>Powered by OpenWeatherMap API | Developed with ❤️ for healthy skin</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
