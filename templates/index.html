@@ -1,227 +1,451 @@
-<!DOCTYPE html><!DOCTYPE html>
+<!DOCTYPE html><!DOCTYPE html><!DOCTYPE html>
 
-<html lang="en"><html lang="en">
+<html lang="en">
 
-<head><head>
+<head><html lang="en"><html lang="en">
 
-    <meta charset="UTF-8">    <meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><head><head>
 
-    <title>AI Skin Health | Weather-Aware Skincare</title>    <title>Weather-based Skin Health</title>
+    <title>AI Skin Health | Weather-Aware Skincare</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">    <meta charset="UTF-8">    <meta charset="UTF-8">
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"></head>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-</head><body>
+</head>    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<body>    <div class="container">
+<body>
 
-    <div class="stars"></div>        <header>
+    <div class="stars"></div>    <title>AI Skin Health | Weather-Aware Skincare</title>    <title>Weather-based Skin Health</title>
 
-    <div class="twinkling"></div>            <h1>☀️ Weather-based Skin Health</h1>
+    <div class="twinkling"></div>
 
-                <p class="subtitle">Get personalized skincare recommendations based on your local weather</p>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
-    <div class="container">        </header>
+    <div class="container">
 
-        <!-- Hero Section -->
+        <!-- Hero Section -->    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"></head>
 
-        <header class="hero">        <div class="search-section">
+        <header class="hero">
 
-            <div class="logo">            <div class="search-box">
+            <div class="logo"></head><body>
 
-                <div class="logo-icon">🧬</div>                <input type="text" id="cityInput" placeholder="Enter your city name..." />
+                <div class="logo-icon">🧬</div>
 
-                <span>AI SkinCare</span>                <button id="searchBtn" onclick="getRecommendations()">Get Recommendations</button>
+                <span>AI SkinCare</span><body>    <div class="container">
 
-            </div>            </div>
+            </div>
 
-            <h1 class="title">            <div id="loading" class="loading hidden">
+            <h1 class="title">    <div class="stars"></div>        <header>
 
-                <span class="gradient-text">Weather-Aware</span> Skincare Intelligence                <div class="spinner"></div>
+                <span class="gradient-text">Weather-Aware</span> Skincare Intelligence
 
-            </h1>                <p>Analyzing weather conditions...</p>
+            </h1>    <div class="twinkling"></div>            <h1>☀️ Weather-based Skin Health</h1>
 
-            <p class="subtitle">            </div>
+            <p class="subtitle">
 
-                AI-powered skin concern prediction • Real-time weather analysis • Personalized recommendations        </div>
+                AI-powered skin analysis • Weather-based predictions • Personalized recommendations                <p class="subtitle">Get personalized skincare recommendations based on your local weather</p>
 
             </p>
 
-        </header>        <div id="results" class="results hidden">
+        </header>    <div class="container">        </header>
 
-            <!-- Weather Info Card -->
 
-        <!-- Search Section -->            <div class="weather-card">
 
-        <section class="search-section">                <h2>Current Weather</h2>
+        <!-- Mode Selection -->        <!-- Hero Section -->
 
-            <div class="search-container">                <div class="weather-info">
+        <div class="mode-selector">
 
-                <div class="search-box">                    <div class="weather-main">
+            <button class="mode-btn active" onclick="switchMode('weather')" id="weatherModeBtn">        <header class="hero">        <div class="search-section">
 
-                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">                        <h3 id="cityName"></h3>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 
-                        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2" stroke-linecap="round"/>                        <div class="temp-display">
+                    <path d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/>            <div class="logo">            <div class="search-box">
 
-                    </svg>                            <span id="temperature" class="temperature"></span>
+                </svg>
 
-                    <input type="text" id="cityInput" placeholder="Enter your city name..." />                            <span class="weather-icon" id="weatherIcon">🌤️</span>
+                <span>Weather Analysis</span>                <div class="logo-icon">🧬</div>                <input type="text" id="cityInput" placeholder="Enter your city name..." />
 
-                    <button id="searchBtn" onclick="getRecommendations()">                        </div>
+            </button>
 
-                        <span>Analyze</span>                        <p id="weatherDescription" class="weather-description"></p>
+            <button class="mode-btn" onclick="switchMode('image')" id="imageModeBtn">                <span>AI SkinCare</span>                <button id="searchBtn" onclick="getRecommendations()">Get Recommendations</button>
 
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">                    </div>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 
-                            <path d="M13 7l5 5m0 0l-5 5m5-5H6" stroke-width="2" stroke-linecap="round"/>                    <div class="weather-details">
+                    <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>            </div>            </div>
 
-                        </svg>                        <div class="detail-item">
+                </svg>
 
-                    </button>                            <span class="detail-label">💧 Humidity:</span>
+                <span>Skin Image Analysis</span>            <h1 class="title">            <div id="loading" class="loading hidden">
 
-                </div>                            <span id="humidity" class="detail-value"></span>
+            </button>
 
-            </div>                        </div>
+        </div>                <span class="gradient-text">Weather-Aware</span> Skincare Intelligence                <div class="spinner"></div>
 
-                        <div class="detail-item">
 
-            <!-- Loading Animation -->                            <span class="detail-label">💨 Wind Speed:</span>
 
-            <div id="loading" class="loading hidden">                            <span id="windSpeed" class="detail-value"></span>
+        <!-- Weather Analysis Section -->            </h1>                <p>Analyzing weather conditions...</p>
 
-                <div class="loader">                        </div>
+        <section class="analysis-section" id="weatherSection">
+
+            <div class="search-container">            <p class="subtitle">            </div>
+
+                <div class="search-box">
+
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">                AI-powered skin concern prediction • Real-time weather analysis • Personalized recommendations        </div>
+
+                        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2" stroke-linecap="round"/>
+
+                    </svg>            </p>
+
+                    <input type="text" id="cityInput" placeholder="Enter your city name..." />
+
+                    <button class="analyze-btn" onclick="getRecommendations()">        </header>        <div id="results" class="results hidden">
+
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+                            <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>            <!-- Weather Info Card -->
+
+                        </svg>
+
+                        <span>Analyze</span>        <!-- Search Section -->            <div class="weather-card">
+
+                    </button>
+
+                </div>        <section class="search-section">                <h2>Current Weather</h2>
+
+            </div>
+
+        </section>            <div class="search-container">                <div class="weather-info">
+
+
+
+        <!-- Image Upload Section -->                <div class="search-box">                    <div class="weather-main">
+
+        <section class="analysis-section hidden" id="imageSection">
+
+            <div class="upload-container">                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">                        <h3 id="cityName"></h3>
+
+                <div class="upload-box" id="uploadBox">
+
+                    <input type="file" id="imageInput" accept="image/*" onchange="handleImageUpload(event)" hidden>                        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2" stroke-linecap="round"/>                        <div class="temp-display">
+
+                    <div class="upload-content" onclick="document.getElementById('imageInput').click()">
+
+                        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">                    </svg>                            <span id="temperature" class="temperature"></span>
+
+                            <path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+
+                        </svg>                    <input type="text" id="cityInput" placeholder="Enter your city name..." />                            <span class="weather-icon" id="weatherIcon">🌤️</span>
+
+                        <h3>Upload Skin Image</h3>
+
+                        <p>Click to browse or drag and drop your image here</p>                    <button id="searchBtn" onclick="getRecommendations()">                        </div>
+
+                        <span class="file-types">Supports: JPG, PNG, JPEG</span>
+
+                    </div>                        <span>Analyze</span>                        <p id="weatherDescription" class="weather-description"></p>
+
+                </div>
+
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">                    </div>
+
+                <div class="preview-container hidden" id="previewContainer">
+
+                    <div class="image-preview">                            <path d="M13 7l5 5m0 0l-5 5m5-5H6" stroke-width="2" stroke-linecap="round"/>                    <div class="weather-details">
+
+                        <img id="previewImage" alt="Preview">
+
+                        <button class="remove-btn" onclick="removeImage()">                        </svg>                        <div class="detail-item">
+
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+                                <path d="M6 18L18 6M6 6l12 12"/>                    </button>                            <span class="detail-label">💧 Humidity:</span>
+
+                            </svg>
+
+                        </button>                </div>                            <span id="humidity" class="detail-value"></span>
+
+                    </div>
+
+                    <button class="analyze-btn" onclick="analyzeSkinImage()">            </div>                        </div>
+
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+                            <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>                        <div class="detail-item">
+
+                            <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+
+                        </svg>            <!-- Loading Animation -->                            <span class="detail-label">💨 Wind Speed:</span>
+
+                        <span>Analyze Skin Condition</span>
+
+                    </button>            <div id="loading" class="loading hidden">                            <span id="windSpeed" class="detail-value"></span>
+
+                </div>
+
+            </div>                <div class="loader">                        </div>
+
+        </section>
 
                     <div class="loader-circle"></div>                    </div>
 
-                    <div class="loader-circle"></div>                </div>
+        <!-- Loading Animation -->
 
-                    <div class="loader-circle"></div>            </div>
+        <div id="loading" class="loading hidden">                    <div class="loader-circle"></div>                </div>
 
-                </div>
+            <div class="loader">
 
-                <p class="loading-text">Analyzing weather patterns and predicting skin concerns...</p>            <!-- Skincare Tips Card -->
+                <div class="loader-circle"></div>                    <div class="loader-circle"></div>            </div>
+
+                <div class="loader-circle"></div>
+
+                <div class="loader-circle"></div>                </div>
+
+            </div>
+
+            <p class="loading-text" id="loadingText">Analyzing...</p>                <p class="loading-text">Analyzing weather patterns and predicting skin concerns...</p>            <!-- Skincare Tips Card -->
+
+        </div>
 
             </div>            <div class="recommendations-card">
 
-        </section>                <h2>🌸 Skincare Tips for Today</h2>
+        <!-- Results Section -->
 
-                <ul id="skincareTips" class="tips-list"></ul>
+        <div id="results" class="results hidden">        </section>                <h2>🌸 Skincare Tips for Today</h2>
 
-        <!-- Results Section -->            </div>
+            <!-- Weather Dashboard (for weather mode) -->
 
-        <div id="results" class="results hidden">
+            <div class="weather-dashboard" id="weatherDashboard">                <ul id="skincareTips" class="tips-list"></ul>
 
-            <!-- Weather Dashboard -->            <!-- Product Recommendations Card -->
+                <div class="weather-header">
 
-            <div class="weather-dashboard">            <div class="products-card">
+                    <div class="location-info">        <!-- Results Section -->            </div>
 
-                <div class="weather-header">                <h2>🧴 Recommended Products</h2>
+                        <h2 id="cityName"></h2>
 
-                    <div class="location-info">                <ul id="productsRecommended" class="products-list"></ul>
+                        <p class="weather-desc" id="weatherDescription"></p>        <div id="results" class="results hidden">
 
-                        <h2 id="cityName"></h2>            </div>
+                    </div>
 
-                        <p class="weather-desc" id="weatherDescription"></p>
+                    <div class="weather-icon-large" id="weatherIconLarge">🌤️</div>            <!-- Weather Dashboard -->            <!-- Product Recommendations Card -->
 
-                    </div>            <!-- Warnings Card -->
+                </div>
 
-                    <div class="weather-icon-large" id="weatherIconLarge">🌤️</div>            <div id="warningsCard" class="warnings-card hidden">
+                            <div class="weather-dashboard">            <div class="products-card">
 
-                </div>                <h2>⚠️ Important Warnings</h2>
+                <div class="weather-metrics">
 
-                                <ul id="warnings" class="warnings-list"></ul>
-
-                <div class="weather-metrics">            </div>
-
-                    <div class="metric-card">        </div>
+                    <div class="metric-card">                <div class="weather-header">                <h2>🧴 Recommended Products</h2>
 
                         <div class="metric-icon">🌡️</div>
 
-                        <div class="metric-data">        <div id="error" class="error-message hidden"></div>
+                        <div class="metric-data">                    <div class="location-info">                <ul id="productsRecommended" class="products-list"></ul>
 
                             <span class="metric-value" id="temperature"></span>
 
-                            <span class="metric-label">Temperature</span>        <footer>
+                            <span class="metric-label">Temperature</span>                        <h2 id="cityName"></h2>            </div>
 
-                        </div>            <p>Powered by OpenWeatherMap API | Developed with ❤️ for healthy skin</p>
+                        </div>
+
+                    </div>                        <p class="weather-desc" id="weatherDescription"></p>
+
+                    <div class="metric-card">
+
+                        <div class="metric-icon">💧</div>                    </div>            <!-- Warnings Card -->
+
+                        <div class="metric-data">
+
+                            <span class="metric-value" id="humidity"></span>                    <div class="weather-icon-large" id="weatherIconLarge">🌤️</div>            <div id="warningsCard" class="warnings-card hidden">
+
+                            <span class="metric-label">Humidity</span>
+
+                        </div>                </div>                <h2>⚠️ Important Warnings</h2>
+
+                    </div>
+
+                    <div class="metric-card">                                <ul id="warnings" class="warnings-list"></ul>
+
+                        <div class="metric-icon">💨</div>
+
+                        <div class="metric-data">                <div class="weather-metrics">            </div>
+
+                            <span class="metric-value" id="windSpeed"></span>
+
+                            <span class="metric-label">Wind Speed</span>                    <div class="metric-card">        </div>
+
+                        </div>
+
+                    </div>                        <div class="metric-icon">🌡️</div>
+
+                    <div class="metric-card uv-card">
+
+                        <div class="metric-icon">☀️</div>                        <div class="metric-data">        <div id="error" class="error-message hidden"></div>
+
+                        <div class="metric-data">
+
+                            <span class="metric-value" id="uvIndex"></span>                            <span class="metric-value" id="temperature"></span>
+
+                            <span class="metric-label" id="uvRisk"></span>
+
+                        </div>                            <span class="metric-label">Temperature</span>        <footer>
+
+                    </div>
+
+                </div>                        </div>            <p>Powered by OpenWeatherMap API | Developed with ❤️ for healthy skin</p>
+
+            </div>
 
                     </div>        </footer>
 
-                    <div class="metric-card">    </div>
+            <!-- Image Analysis Dashboard (for image mode) -->
 
-                        <div class="metric-icon">💧</div>
+            <div class="image-analysis-dashboard hidden" id="imageDashboard">                    <div class="metric-card">    </div>
 
-                        <div class="metric-data">    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+                <div class="analysis-header">
+
+                    <h2>🔬 Skin Condition Analysis Results</h2>                        <div class="metric-icon">💧</div>
+
+                    <p class="analysis-subtitle">AI-powered detection from your uploaded image</p>
+
+                </div>                        <div class="metric-data">    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+            </div>
 
                             <span class="metric-value" id="humidity"></span></body>
 
-                            <span class="metric-label">Humidity</span></html>
+            <!-- AI Predictions Section -->
 
-                        </div>
+            <div class="predictions-section">                            <span class="metric-label">Humidity</span></html>
+
+                <div class="section-header">
+
+                    <h2>                        </div>
+
+                        <span class="icon">🤖</span>                    </div>
+
+                        <span id="predictionTitle">AI-Predicted Skin Concerns</span>                    <div class="metric-card">
+
+                    </h2>                        <div class="metric-icon">💨</div>
+
+                    <p class="section-subtitle" id="predictionSubtitle">Machine learning analysis of weather impact on your skin</p>                        <div class="metric-data">
+
+                </div>                            <span class="metric-value" id="windSpeed"></span>
+
+                <div id="predictedConcerns" class="concerns-grid"></div>                            <span class="metric-label">Wind Speed</span>
+
+            </div>                        </div>
+
                     </div>
-                    <div class="metric-card">
-                        <div class="metric-icon">💨</div>
-                        <div class="metric-data">
-                            <span class="metric-value" id="windSpeed"></span>
-                            <span class="metric-label">Wind Speed</span>
-                        </div>
-                    </div>
-                    <div class="metric-card uv-card">
-                        <div class="metric-icon">☀️</div>
-                        <div class="metric-data">
-                            <span class="metric-value" id="uvIndex"></span>
-                            <span class="metric-label" id="uvRisk"></span>
-                        </div>
-                    </div>
-                </div>
+
+            <!-- Skincare Tips -->                    <div class="metric-card uv-card">
+
+            <div class="tips-section">                        <div class="metric-icon">☀️</div>
+
+                <div class="section-header">                        <div class="metric-data">
+
+                    <h2>                            <span class="metric-value" id="uvIndex"></span>
+
+                        <span class="icon">💡</span>                            <span class="metric-label" id="uvRisk"></span>
+
+                        Personalized Skincare Tips                        </div>
+
+                    </h2>                    </div>
+
+                </div>                </div>
+
+                <div id="skincareTips" class="tips-grid"></div>            </div>
+
             </div>
 
             <!-- AI Predictions Section -->
-            <div class="predictions-section">
-                <div class="section-header">
-                    <h2>
-                        <span class="icon">🤖</span>
-                        AI-Predicted Skin Concerns
-                    </h2>
-                    <p class="section-subtitle">Machine learning analysis of weather impact on your skin</p>
-                </div>
-                <div id="predictedConcerns" class="concerns-grid"></div>
-            </div>
 
-            <!-- Skincare Tips -->
-            <div class="tips-section">
-                <div class="section-header">
-                    <h2>
-                        <span class="icon">💡</span>
-                        Personalized Skincare Tips
-                    </h2>
-                </div>
-                <div id="skincareTips" class="tips-grid"></div>
-            </div>
+            <!-- Product Recommendations -->            <div class="predictions-section">
+
+            <div class="products-section">                <div class="section-header">
+
+                <div class="section-header">                    <h2>
+
+                    <h2>                        <span class="icon">🤖</span>
+
+                        <span class="icon">🧴</span>                        AI-Predicted Skin Concerns
+
+                        Recommended Products                    </h2>
+
+                    </h2>                    <p class="section-subtitle">Machine learning analysis of weather impact on your skin</p>
+
+                </div>                </div>
+
+                <div id="productsRecommended" class="products-grid"></div>                <div id="predictedConcerns" class="concerns-grid"></div>
+
+            </div>            </div>
+
+
+
+            <!-- Warnings -->            <!-- Skincare Tips -->
+
+            <div id="warningsSection" class="warnings-section hidden">            <div class="tips-section">
+
+                <div class="section-header">                <div class="section-header">
+
+                    <h2>                    <h2>
+
+                        <span class="icon">⚠️</span>                        <span class="icon">💡</span>
+
+                        Important Warnings                        Personalized Skincare Tips
+
+                    </h2>                    </h2>
+
+                </div>                </div>
+
+                <div id="warnings" class="warnings-list"></div>                <div id="skincareTips" class="tips-grid"></div>
+
+            </div>            </div>
+
+        </div>
 
             <!-- Product Recommendations -->
-            <div class="products-section">
-                <div class="section-header">
-                    <h2>
-                        <span class="icon">🧴</span>
-                        Recommended Products
-                    </h2>
-                </div>
-                <div id="productsRecommended" class="products-grid"></div>
+
+        <!-- Error Message -->            <div class="products-section">
+
+        <div id="error" class="error-toast hidden">                <div class="section-header">
+
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">                    <h2>
+
+                <circle cx="12" cy="12" r="10" stroke-width="2"/>                        <span class="icon">🧴</span>
+
+                <path d="M15 9l-6 6m0-6l6 6" stroke-width="2" stroke-linecap="round"/>                        Recommended Products
+
+            </svg>                    </h2>
+
+            <span id="errorMessage"></span>                </div>
+
+        </div>                <div id="productsRecommended" class="products-grid"></div>
+
             </div>
 
-            <!-- Warnings -->
-            <div id="warningsSection" class="warnings-section hidden">
-                <div class="section-header">
-                    <h2>
-                        <span class="icon">⚠️</span>
+        <!-- Footer -->
+
+        <footer class="footer">            <!-- Warnings -->
+
+            <p>Powered by OpenWeatherMap API • AI/ML-based Predictions • Developed with ❤️</p>            <div id="warningsSection" class="warnings-section hidden">
+
+            <p class="footer-note">Note: Recommendations are AI-generated. Consult a dermatologist for specific concerns.</p>                <div class="section-header">
+
+        </footer>                    <h2>
+
+    </div>                        <span class="icon">⚠️</span>
+
                         Important Warnings
-                    </h2>
-                </div>
-                <div id="warnings" class="warnings-list"></div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>                    </h2>
+
+</body>                </div>
+
+</html>                <div id="warnings" class="warnings-list"></div>
+
             </div>
         </div>
 

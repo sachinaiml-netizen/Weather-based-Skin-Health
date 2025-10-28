@@ -18,8 +18,132 @@ const concernIcons = {
     'Acne': '🔴',
     'Sunburn': '☀️',
     'Sensitivity': '⚠️',
-    'Oiliness': '💧'
+    'Oiliness': '💧',
+    'Wrinkles': '👴',
+    'Dark Spots': '⚫',
+    'Redness': '🔴',
+    'Pigmentation': '🟤',
+    'Pores': '⭕'
 };
+
+let currentMode = 'weather';
+let uploadedImage = null;
+
+// Switch between weather and image mode
+function switchMode(mode) {
+    currentMode = mode;
+    
+    // Update button states
+    document.getElementById('weatherModeBtn').classList.toggle('active', mode === 'weather');
+    document.getElementById('imageModeBtn').classList.toggle('active', mode === 'image');
+    
+    // Show/hide sections
+    document.getElementById('weatherSection').classList.toggle('hidden', mode !== 'weather');
+    document.getElementById('imageSection').classList.toggle('hidden', mode !== 'image');
+    
+    // Hide results when switching modes
+    hideElement('results');
+    hideElement('error');
+}
+
+// Handle image upload
+function handleImageUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+        showError('Please upload a valid image file (JPG, PNG, JPEG)');
+        return;
+    }
+    
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+        showError('Image size should be less than 5MB');
+        return;
+    }
+    
+    uploadedImage = file;
+    
+    // Show preview
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        document.getElementById('previewImage').src = e.target.result;
+        document.getElementById('uploadBox').classList.add('hidden');
+        document.getElementById('previewContainer').classList.remove('hidden');
+    };
+    reader.readAsDataURL(file);
+}
+
+// Remove uploaded image
+function removeImage() {
+    uploadedImage = null;
+    document.getElementById('imageInput').value = '';
+    document.getElementById('uploadBox').classList.remove('hidden');
+    document.getElementById('previewContainer').classList.add('hidden');
+    hideElement('results');
+}
+
+// Analyze skin from uploaded image
+async function analyzeSkinImage() {
+    if (!uploadedImage) {
+        showError('Please upload an image first');
+        return;
+    }
+    
+    hideElement('results');
+    hideElement('error');
+    showElement('loading');
+    document.getElementById('loadingText').textContent = 'Analyzing skin condition from image...';
+    
+    try {
+        const formData = new FormData();
+        formData.append('image', uploadedImage);
+        
+        const response = await fetch('/analyze_skin_image', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const data = await response.json();
+        
+        hideElement('loading');
+        
+        if (data.error) {
+            showError(data.error);
+            return;
+        }
+        
+        displayImageResults(data);
+    } catch (error) {
+        hideElement('loading');
+        showError('An error occurred while analyzing the image. Please try again.');
+        console.error('Error:', error);
+    }
+}
+
+// Display image analysis results
+function displayImageResults(data) {
+    // Show image analysis dashboard
+    document.getElementById('weatherDashboard').classList.add('hidden');
+    document.getElementById('imageDashboard').classList.remove('hidden');
+    
+    // Update section titles
+    document.getElementById('predictionTitle').textContent = 'Detected Skin Conditions';
+    document.getElementById('predictionSubtitle').textContent = 'AI analysis from your uploaded image';
+    
+    // Display detected conditions
+    displayPredictedConcerns(data.detected_conditions);
+    
+    // Display recommendations
+    displaySkincareTips(data.skincare_tips);
+    displayProducts(data.products_recommended);
+    displayWarnings(data.warnings);
+    
+    // Show results
+    showElement('results');
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
 
 // Get weather icon based on condition
 function getWeatherIcon(condition) {
@@ -47,6 +171,7 @@ async function getRecommendations() {
     hideElement('results');
     hideElement('error');
     showElement('loading');
+    document.getElementById('loadingText').textContent = 'Analyzing weather patterns and predicting skin concerns...';
 
     try {
         const response = await fetch('/get_recommendations', {
@@ -76,6 +201,14 @@ async function getRecommendations() {
 
 // Display results on the page
 function displayResults(data) {
+    // Show weather dashboard
+    document.getElementById('weatherDashboard').classList.remove('hidden');
+    document.getElementById('imageDashboard').classList.add('hidden');
+    
+    // Update section titles
+    document.getElementById('predictionTitle').textContent = 'AI-Predicted Skin Concerns';
+    document.getElementById('predictionSubtitle').textContent = 'Machine learning analysis of weather impact on your skin';
+    
     // Display weather information
     document.getElementById('cityName').textContent = `${data.city}, ${data.country}`;
     document.getElementById('weatherDescription').textContent = data.weather_description;
@@ -259,11 +392,45 @@ document.addEventListener('DOMContentLoaded', function() {
     if (hero) {
         hero.style.animation = 'fadeInUp 0.8s ease';
     }
+    
+    // Drag and drop support
+    const uploadBox = document.getElementById('uploadBox');
+    if (uploadBox) {
+        uploadBox.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadBox.style.borderColor = 'var(--accent-primary)';
+            uploadBox.style.background = 'var(--bg-card-hover)';
+        });
+        
+        uploadBox.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            uploadBox.style.borderColor = 'var(--border-color)';
+            uploadBox.style.background = 'var(--bg-card)';
+        });
+        
+        uploadBox.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadBox.style.borderColor = 'var(--border-color)';
+            uploadBox.style.background = 'var(--bg-card)';
+            
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const input = document.getElementById('imageInput');
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                input.files = dataTransfer.files;
+                handleImageUpload({ target: input });
+            }
+        });
+    }
 });
 
 // Add particle effect on button click
-document.getElementById('searchBtn').addEventListener('click', function(e) {
-    createRipple(e);
+const analyzeButtons = document.querySelectorAll('.analyze-btn');
+analyzeButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+        createRipple(e);
+    });
 });
 
 function createRipple(event) {

@@ -4,6 +4,9 @@ import os
 from datetime import datetime
 from dotenv import load_dotenv
 import math
+from PIL import Image
+import io
+import base64
 
 # Load environment variables
 load_dotenv()
@@ -14,6 +17,15 @@ app = Flask(__name__)
 WEATHER_API_KEY = os.environ.get('WEATHER_API_KEY', 'your_api_key_here')
 WEATHER_API_URL = 'https://api.openweathermap.org/data/2.5/weather'
 UV_INDEX_URL = 'https://api.openweathermap.org/data/2.5/uvi'
+
+# Configure upload folder
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5MB max file size
 
 def get_weather_data(city):
     """Fetch weather data from OpenWeatherMap API"""
@@ -312,6 +324,250 @@ def get_recommendations():
 def health():
     """Health check endpoint"""
     return jsonify({'status': 'healthy', 'timestamp': datetime.now().isoformat()})
+
+def allowed_file(filename):
+    """Check if file extension is allowed"""
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def analyze_skin_from_image(image_file):
+    """
+    AI-based skin condition analysis from image
+    This is a rule-based analysis system that examines image properties
+    In production, this would use a trained ML model
+    """
+    try:
+        # Open and analyze image
+        img = Image.open(image_file)
+        img_data = img.convert('RGB')
+        pixels = list(img_data.getdata())
+        
+        # Calculate average color properties
+        avg_red = sum([p[0] for p in pixels]) / len(pixels)
+        avg_green = sum([p[1] for p in pixels]) / len(pixels)
+        avg_blue = sum([p[2] for p in pixels]) / len(pixels)
+        
+        # Calculate image brightness
+        brightness = (avg_red + avg_green + avg_blue) / 3
+        
+        # Calculate color variance (indicates texture/unevenness)
+        red_variance = sum([(p[0] - avg_red) ** 2 for p in pixels]) / len(pixels)
+        variance = math.sqrt(red_variance)
+        
+        # Redness score (for inflammation/acne/sensitivity)
+        redness_score = (avg_red - (avg_green + avg_blue) / 2) / 255 * 100
+        
+        # Analyze skin conditions based on image properties
+        detected_conditions = []
+        
+        # Acne detection (high redness, high variance)
+        if redness_score > 15 and variance > 30:
+            acne_score = min(95, 50 + redness_score + variance / 3)
+            detected_conditions.append({
+                'type': 'Acne',
+                'risk': 'High Risk' if acne_score > 70 else 'Moderate Risk',
+                'severity': 'high' if acne_score > 70 else 'moderate',
+                'score': round(acne_score, 1),
+                'confidence': min(95, 70 + variance / 5)
+            })
+        
+        # Redness/Sensitivity detection
+        if redness_score > 10:
+            redness_severity = min(90, 40 + redness_score * 2)
+            detected_conditions.append({
+                'type': 'Redness',
+                'risk': 'High Risk' if redness_severity > 70 else 'Moderate Risk',
+                'severity': 'high' if redness_severity > 70 else 'moderate',
+                'score': round(redness_severity, 1),
+                'confidence': min(90, 65 + redness_score)
+            })
+        
+        # Dryness detection (low variance, certain brightness range)
+        if variance < 25 and 100 < brightness < 180:
+            dryness_score = min(85, 60 - variance)
+            detected_conditions.append({
+                'type': 'Dryness',
+                'risk': 'Moderate Risk',
+                'severity': 'moderate',
+                'score': round(dryness_score, 1),
+                'confidence': 75
+            })
+        
+        # Dark spots/Pigmentation (low brightness with high variance)
+        if brightness < 100 and variance > 25:
+            pigmentation_score = min(80, (150 - brightness) / 2 + variance)
+            detected_conditions.append({
+                'type': 'Dark Spots',
+                'risk': 'Moderate Risk',
+                'severity': 'moderate',
+                'score': round(pigmentation_score, 1),
+                'confidence': 70
+            })
+        
+        # Oiliness detection (high brightness, medium variance)
+        if brightness > 180 and 20 < variance < 40:
+            oiliness_score = min(75, (brightness - 180) / 2 + variance)
+            detected_conditions.append({
+                'type': 'Oiliness',
+                'risk': 'Moderate Risk',
+                'severity': 'moderate',
+                'score': round(oiliness_score, 1),
+                'confidence': 68
+            })
+        
+        # If no conditions detected
+        if not detected_conditions:
+            detected_conditions.append({
+                'type': 'Healthy Skin',
+                'risk': 'Low Risk',
+                'severity': 'low',
+                'score': 15,
+                'confidence': 80
+            })
+        
+        return detected_conditions
+        
+    except Exception as e:
+        print(f"Error analyzing image: {e}")
+        return None
+
+def get_skin_recommendations_from_image(detected_conditions):
+    """Generate skincare recommendations based on detected skin conditions"""
+    recommendations = {
+        'detected_conditions': detected_conditions,
+        'skincare_tips': [],
+        'products_recommended': [],
+        'warnings': []
+    }
+    
+    for condition in detected_conditions:
+        condition_type = condition['type']
+        
+        if condition_type == 'Acne':
+            recommendations['skincare_tips'].extend([
+                f"🔴 {condition['risk']}: Active acne detected. Keep skin clean and avoid touching face.",
+                "Use non-comedogenic products to prevent clogged pores.",
+                "Avoid heavy makeup and oil-based products."
+            ])
+            recommendations['products_recommended'].extend([
+                "Salicylic acid cleanser (2%)",
+                "Benzoyl peroxide spot treatment",
+                "Oil-free moisturizer",
+                "Tea tree oil serum",
+                "Clay mask (1-2 times per week)"
+            ])
+            recommendations['warnings'].append("⚠️ Avoid picking or squeezing acne as it may cause scarring.")
+            
+        elif condition_type == 'Redness':
+            recommendations['skincare_tips'].extend([
+                f"🔴 {condition['risk']}: Redness detected. Use soothing, anti-inflammatory products.",
+                "Avoid harsh exfoliants and hot water.",
+                "Use gentle, fragrance-free products."
+            ])
+            recommendations['products_recommended'].extend([
+                "Centella asiatica (Cica) cream",
+                "Niacinamide serum",
+                "Gentle cleansing milk",
+                "Mineral sunscreen (non-chemical)",
+                "Aloe vera gel"
+            ])
+            
+        elif condition_type == 'Dryness':
+            recommendations['skincare_tips'].extend([
+                f"🏜️ {condition['risk']}: Dry skin detected. Focus on intense hydration.",
+                "Use rich, emollient moisturizers.",
+                "Avoid harsh soaps and long hot showers."
+            ])
+            recommendations['products_recommended'].extend([
+                "Hyaluronic acid serum",
+                "Rich cream moisturizer with ceramides",
+                "Facial oil (rosehip, argan, or jojoba)",
+                "Gentle cream cleanser",
+                "Overnight sleeping mask"
+            ])
+            
+        elif condition_type == 'Dark Spots':
+            recommendations['skincare_tips'].extend([
+                f"⚫ {condition['risk']}: Dark spots/pigmentation detected.",
+                "Use brightening ingredients consistently.",
+                "Always wear sunscreen to prevent darkening."
+            ])
+            recommendations['products_recommended'].extend([
+                "Vitamin C serum (morning)",
+                "Retinol cream (evening)",
+                "Niacinamide serum",
+                "SPF 50+ broad-spectrum sunscreen",
+                "Alpha arbutin serum"
+            ])
+            recommendations['warnings'].append("⚠️ Sun protection is crucial! Dark spots worsen with UV exposure.")
+            
+        elif condition_type == 'Oiliness':
+            recommendations['skincare_tips'].extend([
+                f"💧 {condition['risk']}: Oily skin detected. Use oil-control products.",
+                "Cleanse twice daily to remove excess oil.",
+                "Use lightweight, gel-based products."
+            ])
+            recommendations['products_recommended'].extend([
+                "Foaming gel cleanser",
+                "Oil-free mattifying moisturizer",
+                "Niacinamide serum (oil control)",
+                "Clay mask (2-3 times per week)",
+                "Blotting papers"
+            ])
+            
+        elif condition_type == 'Healthy Skin':
+            recommendations['skincare_tips'].extend([
+                "✅ Skin appears healthy! Maintain your current routine.",
+                "Continue with basic cleansing, moisturizing, and sun protection.",
+                "Stay hydrated and maintain a balanced diet."
+            ])
+            recommendations['products_recommended'].extend([
+                "Gentle daily cleanser",
+                "Light moisturizer",
+                "SPF 30+ sunscreen",
+                "Antioxidant serum (optional)"
+            ])
+    
+    # Remove duplicates
+    recommendations['skincare_tips'] = list(dict.fromkeys(recommendations['skincare_tips']))
+    recommendations['products_recommended'] = list(dict.fromkeys(recommendations['products_recommended']))
+    recommendations['warnings'] = list(dict.fromkeys(recommendations['warnings']))
+    
+    # General recommendations
+    recommendations['skincare_tips'].append("💧 Stay hydrated by drinking plenty of water.")
+    recommendations['skincare_tips'].append("😴 Get adequate sleep for healthy skin regeneration.")
+    recommendations['warnings'].append("📋 Consult a dermatologist for persistent or severe skin concerns.")
+    
+    return recommendations
+
+@app.route('/analyze_skin_image', methods=['POST'])
+def analyze_skin_image():
+    """API endpoint to analyze skin from uploaded image"""
+    if 'image' not in request.files:
+        return jsonify({'error': 'No image file provided'}), 400
+    
+    file = request.files['image']
+    
+    if file.filename == '':
+        return jsonify({'error': 'No file selected'}), 400
+    
+    if not allowed_file(file.filename):
+        return jsonify({'error': 'Invalid file type. Please upload JPG, PNG, or JPEG'}), 400
+    
+    try:
+        # Analyze the image
+        detected_conditions = analyze_skin_from_image(file.stream)
+        
+        if not detected_conditions:
+            return jsonify({'error': 'Unable to analyze image. Please try another image.'}), 400
+        
+        # Get recommendations based on detected conditions
+        recommendations = get_skin_recommendations_from_image(detected_conditions)
+        
+        return jsonify(recommendations)
+        
+    except Exception as e:
+        print(f"Error processing image: {e}")
+        return jsonify({'error': 'An error occurred while processing the image.'}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

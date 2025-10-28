@@ -141,6 +141,54 @@ body {
     padding: 40px 0;
 }
 
+/* Mode Selector */
+.mode-selector {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+}
+
+.mode-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 28px;
+    background: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-secondary);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.mode-btn svg {
+    width: 22px;
+    height: 22px;
+}
+
+.mode-btn:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--accent-primary);
+    transform: translateY(-2px);
+}
+
+.mode-btn.active {
+    background: var(--accent-gradient);
+    border-color: transparent;
+    color: white;
+    box-shadow: 0 8px 20px rgba(0, 212, 255, 0.3);
+}
+
+/* Analysis Sections */
+.analysis-section {
+    padding: 20px 0;
+}
+
 .search-container {
     max-width: 700px;
     margin: 0 auto;
@@ -164,8 +212,8 @@ body {
 }
 
 .search-icon {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
     margin: auto 12px;
     color: var(--text-muted);
 }
@@ -185,34 +233,173 @@ body {
     color: var(--text-muted);
 }
 
-#searchBtn {
+.analyze-btn {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 16px 32px;
-    font-size: 16px;
+    gap: 10px;
+    padding: 14px 24px;
+    font-size: 15px;
     font-weight: 600;
     background: var(--accent-gradient);
     color: white;
     border: none;
-    border-radius: 12px;
+    border-radius: 10px;
     cursor: pointer;
     transition: all 0.3s ease;
     font-family: inherit;
 }
 
-#searchBtn:hover {
+.analyze-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 212, 255, 0.3);
+    box-shadow: 0 8px 20px rgba(0, 212, 255, 0.4);
 }
 
-#searchBtn:active {
+.analyze-btn:active {
     transform: translateY(0);
 }
 
-#searchBtn svg {
+.analyze-btn svg {
     width: 20px;
     height: 20px;
+}
+
+/* Image Upload Section */
+.upload-container {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.upload-box {
+    background: var(--bg-card);
+    border: 2px dashed var(--border-color);
+    border-radius: 16px;
+    padding: 60px 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upload-box:hover {
+    border-color: var(--accent-primary);
+    background: var(--bg-card-hover);
+    transform: translateY(-2px);
+}
+
+.upload-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.upload-icon {
+    width: 64px;
+    height: 64px;
+    color: var(--accent-primary);
+    animation: float 3s ease-in-out infinite;
+}
+
+.upload-content h3 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.upload-content p {
+    color: var(--text-secondary);
+    font-size: 16px;
+}
+
+.file-types {
+    display: inline-block;
+    padding: 6px 16px;
+    background: rgba(0, 212, 255, 0.1);
+    border-radius: 20px;
+    color: var(--accent-primary);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.preview-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    animation: fadeInUp 0.5s ease;
+}
+
+.image-preview {
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    padding: 16px;
+}
+
+.image-preview img {
+    width: 100%;
+    max-height: 500px;
+    object-fit: contain;
+    border-radius: 12px;
+}
+
+.remove-btn {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    width: 40px;
+    height: 40px;
+    background: rgba(239, 68, 68, 0.9);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.remove-btn:hover {
+    background: var(--danger);
+    transform: scale(1.1);
+}
+
+.remove-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.preview-container .analyze-btn {
+    align-self: center;
+    padding: 16px 40px;
+    font-size: 16px;
+}
+
+/* Image Analysis Dashboard */
+.image-analysis-dashboard {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 32px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-xl);
+}
+
+.analysis-header {
+    text-align: center;
+}
+
+.analysis-header h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.analysis-subtitle {
+    color: var(--text-secondary);
+    font-size: 16px;
 }
 
 /* Loading Animation */
