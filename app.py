@@ -303,12 +303,22 @@ def get_skin_recommendations(weather_data):
 
 @app.route('/')
 def index():
-    """Render the main page"""
-    return render_template('index.html')
+    """Render the home page"""
+    return render_template('home.html')
 
-@app.route('/get_recommendations', methods=['POST'])
-def get_recommendations():
-    """API endpoint to get skin care recommendations"""
+@app.route('/weather')
+def weather_page():
+    """Render the weather analysis page"""
+    return render_template('weather.html')
+
+@app.route('/image-analysis')
+def image_analysis_page():
+    """Render the image analysis page"""
+    return render_template('image_analysis.html')
+
+@app.route('/api/analyze', methods=['POST'])
+def api_analyze():
+    """API endpoint to get weather-based skin care recommendations"""
     data = request.get_json()
     city = data.get('city', '')
     
@@ -316,9 +326,51 @@ def get_recommendations():
         return jsonify({'error': 'City name is required'}), 400
     
     weather_data = get_weather_data(city)
-    recommendations = get_skin_recommendations(weather_data)
     
-    return jsonify(recommendations)
+    if not weather_data:
+        return jsonify({'error': 'Unable to fetch weather data. Please check the city name and try again.'}), 400
+    
+    # Get UV index
+    lat = weather_data['coord']['lat']
+    lon = weather_data['coord']['lon']
+    uv_index = get_uv_index(lat, lon)
+    
+    # Predict skin concerns
+    predicted_concerns = predict_skin_concerns(weather_data, uv_index)
+    
+    # Format response
+    response = {
+        'city': weather_data['name'],
+        'weather': {
+            'temperature': weather_data['main']['temp'],
+            'feels_like': weather_data['main']['feels_like'],
+            'humidity': weather_data['main']['humidity'],
+            'pressure': weather_data['main']['pressure'],
+            'description': weather_data['weather'][0]['description'],
+            'wind_speed': weather_data['wind']['speed'],
+            'uv_index': round(uv_index, 1)
+        },
+        'predictions': {},
+        'recommendations': [],
+        'products': [],
+        'warnings': []
+    }
+    
+    # Format predictions
+    for concern in predicted_concerns:
+        response['predictions'][concern['type'].lower()] = {
+            'score': concern['score'],
+            'risk_level': concern['risk'],
+            'confidence': concern['confidence']
+        }
+    
+    # Get detailed recommendations
+    recommendations = get_skin_recommendations(weather_data)
+    response['recommendations'] = recommendations['skincare_tips']
+    response['products'] = recommendations['products_recommended']
+    response['warnings'] = recommendations['warnings']
+    
+    return jsonify(response)
 
 @app.route('/health')
 def health():
@@ -539,13 +591,13 @@ def get_skin_recommendations_from_image(detected_conditions):
     
     return recommendations
 
-@app.route('/analyze_skin_image', methods=['POST'])
-def analyze_skin_image():
+@app.route('/api/analyze-image', methods=['POST'])
+def api_analyze_image():
     """API endpoint to analyze skin from uploaded image"""
-    if 'image' not in request.files:
+    if 'file' not in request.files:
         return jsonify({'error': 'No image file provided'}), 400
     
-    file = request.files['image']
+    file = request.files['file']
     
     if file.filename == '':
         return jsonify({'error': 'No file selected'}), 400
@@ -560,10 +612,29 @@ def analyze_skin_image():
         if not detected_conditions:
             return jsonify({'error': 'Unable to analyze image. Please try another image.'}), 400
         
-        # Get recommendations based on detected conditions
-        recommendations = get_skin_recommendations_from_image(detected_conditions)
+        # Format response
+        response = {
+            'predictions': {},
+            'recommendations': [],
+            'products': [],
+            'warnings': []
+        }
         
-        return jsonify(recommendations)
+        # Format predictions
+        for condition in detected_conditions:
+            response['predictions'][condition['type'].lower().replace(' ', '_')] = {
+                'score': condition['score'],
+                'risk_level': condition['risk'],
+                'confidence': condition['confidence']
+            }
+        
+        # Get detailed recommendations
+        recommendations = get_skin_recommendations_from_image(detected_conditions)
+        response['recommendations'] = recommendations['skincare_tips']
+        response['products'] = recommendations['products_recommended']
+        response['warnings'] = recommendations['warnings']
+        
+        return jsonify(response)
         
     except Exception as e:
         print(f"Error processing image: {e}")

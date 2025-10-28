@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather-based Skin Health</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    
+    <div class="container">
+        <nav class="navbar">
+            <a href="/" class="logo">
+                <div class="logo-icon">🧬</div>
+                <span>AI SkinCare</span>
+            </a>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/image-analysis" class="nav-link">Image Analysis</a>
+            </div>
+        </nav>
+
+        <header class="page-header">
+            <h1>Weather-based Skin Health</h1>
+            <p>Get personalized skincare recommendations based on your local weather</p>
+        </header>
+
+        <section class="search-section">
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" id="cityInput" placeholder="Enter your city name..." />
+                    <button class="btn-primary" onclick="getRecommendations()">
+                        Get Recommendations
+                    </button>
+                </div>
+            </div>
+
+            <div id="loading" class="loading hidden">
+                <div class="spinner"></div>
+                <p>Analyzing weather conditions...</p>
+            </div>
+        </section>
+
+        <div id="results" class="results hidden">
+            <div class="weather-card">
+                <h2>Current Weather</h2>
+                <div class="weather-info">
+                    <div class="weather-main">
+                        <h3 id="cityName"></h3>
+                        <div class="temp-display">
+                            <span id="temperature" class="temperature"></span>
+                            <span class="weather-icon" id="weatherIcon">🌤️</span>
+                        </div>
+                        <p id="weatherDescription" class="weather-description"></p>
+                    </div>
+                    <div class="weather-details">
+                        <div class="detail-item">
+                            <span class="detail-label">💧 Humidity:</span>
+                            <span id="humidity" class="detail-value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">💨 Wind Speed:</span>
+                            <span id="windSpeed" class="detail-value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">☀️ UV Index:</span>
+                            <span id="uvIndex" class="detail-value"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="predictions-card">
+                <h2>🤖 AI-Predicted Skin Concerns</h2>
+                <div id="predictedConcerns" class="concerns-grid"></div>
+            </div>
+
+            <div class="recommendations-card">
+                <h2>💡 Skincare Tips</h2>
+                <ul id="skincareTips" class="tips-list"></ul>
+            </div>
+
+            <div class="products-card">
+                <h2>🧴 Recommended Products</h2>
+                <ul id="productsRecommended" class="products-list"></ul>
+            </div>
+
+            <div id="warningsCard" class="warnings-card hidden">
+                <h2>⚠️ Important Warnings</h2>
+                <ul id="warnings" class="warnings-list"></ul>
+            </div>
+        </div>
+
+        <div id="error" class="error-message hidden"></div>
+
+        <footer class="footer">
+            <p>Powered by OpenWeatherMap API • AI/ML Predictions</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/weather.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skin Image Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    
+    <div class="container">
+        <nav class="navbar">
+            <a href="/" class="logo">
+                <div class="logo-icon">🧬</div>
+                <span>AI SkinCare</span>
+            </a>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/weather" class="nav-link">Weather Analysis</a>
+            </div>
+        </nav>
+
+        <header class="page-header">
+            <h1>Skin Image Analysis</h1>
+            <p>Upload a photo to detect skin conditions and get personalized recommendations</p>
+        </header>
+
+        <section class="upload-section">
+            <div class="upload-box" id="uploadBox">
+                <input type="file" id="imageInput" accept="image/*" onchange="handleImageUpload(event)" hidden>
+                <div class="upload-content" onclick="document.getElementById('imageInput').click()">
+                    <div class="upload-icon">📸</div>
+                    <h3>Upload Skin Image</h3>
+                    <p>Click to browse or drag and drop</p>
+                    <span class="file-types">JPG, PNG, JPEG (Max 5MB)</span>
+                </div>
+            </div>
+
+            <div class="preview-container hidden" id="previewContainer">
+                <div class="image-preview">
+                    <img id="previewImage" alt="Preview">
+                    <button class="remove-btn" onclick="removeImage()">✕</button>
+                </div>
+                <button class="btn-primary" onclick="analyzeSkinImage()">
+                    Analyze Skin Condition
+                </button>
+            </div>
+
+            <div id="loading" class="loading hidden">
+                <div class="spinner"></div>
+                <p>Analyzing skin condition...</p>
+            </div>
+        </section>
+
+        <div id="results" class="results hidden">
+            <div class="analysis-card">
+                <h2>🔬 Skin Analysis Results</h2>
+                <p class="analysis-subtitle">AI-powered detection from your uploaded image</p>
+            </div>
+
+            <div class="predictions-card">
+                <h2>🤖 Detected Skin Conditions</h2>
+                <div id="predictedConcerns" class="concerns-grid"></div>
+            </div>
+
+            <div class="recommendations-card">
+                <h2>💡 Skincare Tips</h2>
+                <ul id="skincareTips" class="tips-list"></ul>
+            </div>
+
+            <div class="products-card">
+                <h2>🧴 Recommended Products</h2>
+                <ul id="productsRecommended" class="products-list"></ul>
+            </div>
+
+            <div id="warningsCard" class="warnings-card hidden">
+                <h2>⚠️ Important Warnings</h2>
+                <ul id="warnings" class="warnings-list"></ul>
+            </div>
+        </div>
+
+        <div id="error" class="error-message hidden"></div>
+
+        <footer class="footer">
+            <p>AI-powered skin condition detection • Consult a dermatologist for medical advice</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/image.js') }}"></script>
+</body>
+</html>

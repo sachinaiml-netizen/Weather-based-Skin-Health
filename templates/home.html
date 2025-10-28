@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Skin Health - Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    
+    <div class="container">
+        <nav class="navbar">
+            <div class="logo">
+                <div class="logo-icon">🧬</div>
+                <span>AI SkinCare</span>
+            </div>
+        </nav>
+
+        <header class="hero-home">
+            <h1 class="main-title">
+                <span class="gradient-text">AI-Powered</span> Skincare Intelligence
+            </h1>
+            <p class="hero-subtitle">
+                Get personalized skincare recommendations based on weather conditions and skin image analysis
+            </p>
+            
+            <div class="feature-cards">
+                <a href="/weather" class="feature-card">
+                    <div class="feature-icon">☁️</div>
+                    <h3>Weather Analysis</h3>
+                    <p>AI predictions based on real-time weather data</p>
+                    <button class="feature-btn">
+                        <span>Start Analysis</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                        </svg>
+                    </button>
+                </a>
+
+                <a href="/image-analysis" class="feature-card">
+                    <div class="feature-icon">📸</div>
+                    <h3>Skin Image Analysis</h3>
+                    <p>Upload your skin photo for AI condition detection</p>
+                    <button class="feature-btn">
+                        <span>Upload Image</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                        </svg>
+                    </button>
+                </a>
+            </div>
+        </header>
+
+        <footer class="footer">
+            <p>Powered by OpenWeatherMap API • AI/ML Predictions • Developed with ❤️</p>
+        </footer>
+    </div>
+</body>
+</html>
