@@ -297,3 +297,5 @@ Developed by Sachin
 - [ ] Product purchase integration
 - [ ] Social sharing features
 - [ ] Skin type quiz and personalization
+#   D e p l o y m e n t   t r i g g e r  
+ 
