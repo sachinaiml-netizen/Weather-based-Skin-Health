@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather-Based Skin Analyzer | AI-Powered Skincare</title>
+    <link rel="stylesheet" href="/static/css/analyzer.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <span class="logo-icon">🧬</span>
+                <h1>Weather-Based Skin Analyzer</h1>
+            </div>
+            <p class="tagline">AI-Powered Personalized Skincare Recommendations</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            
+            <!-- Section 1: Weather Input -->
+            <section class="card weather-section">
+                <div class="card-header">
+                    <h2>🌤️ Step 1: Check Your Weather</h2>
+                    <p>Get UV index, pollution level, and weather conditions</p>
+                </div>
+                <div class="card-body">
+                    <div class="input-group">
+                        <div class="location-input">
+                            <input type="text" id="cityInput" placeholder="Enter your city (e.g., London, New York)" />
+                            <button id="searchBtn" class="btn btn-primary">
+                                <span class="btn-icon">🔍</span>
+                                Get Weather
+                            </button>
+                        </div>
+                        <div class="divider-or">OR</div>
+                        <button id="geolocateBtn" class="btn btn-secondary">
+                            <span class="btn-icon">📍</span>
+                            Use My Location
+                        </button>
+                    </div>
+                    
+                    <!-- Weather Results -->
+                    <div id="weatherResults" class="weather-results hidden">
+                        <div class="weather-grid">
+                            <div class="weather-card">
+                                <div class="weather-icon">🌡️</div>
+                                <div class="weather-label">Temperature</div>
+                                <div class="weather-value" id="temperature">--</div>
+                            </div>
+                            <div class="weather-card">
+                                <div class="weather-icon">💧</div>
+                                <div class="weather-label">Humidity</div>
+                                <div class="weather-value" id="humidity">--</div>
+                            </div>
+                            <div class="weather-card">
+                                <div class="weather-icon">☀️</div>
+                                <div class="weather-label">UV Index</div>
+                                <div class="weather-value" id="uvIndex">--</div>
+                                <div class="weather-badge" id="uvRisk">--</div>
+                            </div>
+                            <div class="weather-card">
+                                <div class="weather-icon">🌫️</div>
+                                <div class="weather-label">Air Quality</div>
+                                <div class="weather-value" id="aqi">--</div>
+                                <div class="weather-badge" id="aqiCategory">--</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Image Upload -->
+            <section class="card upload-section">
+                <div class="card-header">
+                    <h2>📸 Step 2: Upload Your Skin Image</h2>
+                    <p>AI will detect: Acne, Pigmentation, Sunburn, Fungal Infection, Eczema, Dryness</p>
+                </div>
+                <div class="card-body">
+                    <div class="upload-container">
+                        <div id="dropZone" class="drop-zone">
+                            <div class="drop-zone-content">
+                                <div class="upload-icon">📤</div>
+                                <h3>Drag & Drop Your Image Here</h3>
+                                <p>or click to browse</p>
+                                <p class="upload-note">Supported: JPG, PNG, JPEG | Max: 5MB</p>
+                                <input type="file" id="fileInput" accept="image/*" hidden />
+                                <button class="btn btn-outline" onclick="document.getElementById('fileInput').click()">
+                                    Choose File
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Image Preview -->
+                        <div id="imagePreview" class="image-preview hidden">
+                            <div class="preview-header">
+                                <h4>Selected Image</h4>
+                                <button id="removeImageBtn" class="btn-icon-only">✕</button>
+                            </div>
+                            <img id="previewImg" src="" alt="Preview" />
+                            <div class="image-info">
+                                <span id="fileName">--</span>
+                                <span id="fileSize">--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analyze Button -->
+            <div class="analyze-section">
+                <button id="analyzeBtn" class="btn btn-primary btn-large" disabled>
+                    <span class="btn-icon">🔬</span>
+                    Analyze My Skin
+                </button>
+                <p class="analyze-note">Both weather and image required for complete analysis</p>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div id="loadingIndicator" class="loading-indicator hidden">
+                <div class="spinner"></div>
+                <p>Analyzing your skin condition...</p>
+                <p class="loading-subtext">Using AI/ML to detect skin conditions and generate recommendations</p>
+            </div>
+
+            <!-- Section 3: Results -->
+            <div id="resultsSection" class="results-section hidden">
+                
+                <!-- Detected Conditions -->
+                <section class="card results-card">
+                    <div class="card-header">
+                        <h2>🔬 Detected Skin Conditions</h2>
+                        <p>AI-powered analysis with confidence scores</p>
+                    </div>
+                    <div class="card-body">
+                        <div id="conditionsGrid" class="conditions-grid">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Weather Risks -->
+                <section class="card results-card">
+                    <div class="card-header">
+                        <h2>⚠️ Weather-Related Skin Risks</h2>
+                        <p>Environmental factors affecting your skin today</p>
+                    </div>
+                    <div class="card-body">
+                        <div id="weatherRisks" class="alerts-container">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Recommendations -->
+                <section class="card results-card">
+                    <div class="card-header">
+                        <h2>💡 Personalized Skincare Recommendations</h2>
+                        <p>Custom routine based on your skin and weather conditions</p>
+                    </div>
+                    <div class="card-body">
+                        <!-- Priority Actions -->
+                        <div id="priorityActions" class="priority-section">
+                            <!-- Dynamically populated -->
+                        </div>
+                        
+                        <!-- Skincare Routine -->
+                        <div class="recommendations-section">
+                            <h3>🧴 Skincare Routine</h3>
+                            <ul id="routineList" class="recommendations-list">
+                                <!-- Dynamically populated -->
+                            </ul>
+                        </div>
+                        
+                        <!-- Product Recommendations -->
+                        <div class="recommendations-section">
+                            <h3>🛒 Recommended Products</h3>
+                            <ul id="productsList" class="recommendations-list products-list">
+                                <!-- Dynamically populated -->
+                            </ul>
+                        </div>
+                        
+                        <!-- Lifestyle Tips -->
+                        <div class="recommendations-section">
+                            <h3>🌟 Lifestyle Tips</h3>
+                            <ul id="lifestyleTips" class="recommendations-list">
+                                <!-- Dynamically populated -->
+                            </ul>
+                        </div>
+                        
+                        <!-- Warnings -->
+                        <div id="warningsSection" class="warnings-section">
+                            <h3>⚠️ Important Warnings</h3>
+                            <div id="warningsList" class="warnings-list">
+                                <!-- Dynamically populated -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Error Message -->
+            <div id="errorMessage" class="error-message hidden">
+                <div class="error-icon">❌</div>
+                <p id="errorText">--</p>
+                <button id="dismissError" class="btn btn-secondary">Dismiss</button>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p class="disclaimer">
+                <strong>Medical Disclaimer:</strong> This tool provides general skincare guidance based on AI analysis and environmental factors. 
+                It is not a substitute for professional medical advice, diagnosis, or treatment. 
+                Always consult a dermatologist for serious skin concerns or before starting new treatments.
+            </p>
+            <p class="copyright">
+                © 2025 Weather-Based Skin Analyzer | Powered by TensorFlow & OpenWeatherMap API
+            </p>
+        </div>
+    </footer>
+
+    <script src="/static/js/analyzer.js"></script>
+</body>
+</html>
