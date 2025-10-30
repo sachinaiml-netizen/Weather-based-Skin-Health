@@ -12,42 +12,66 @@
     <div class="twinkling"></div>
     
     <div class="container">
-        <nav class="navbar">
-            <a href="/" class="logo">
-                <div class="logo-icon">🧬</div>
-                <span>AI SkinCare</span>
-            </a>
-            <div class="nav-links">
-                <a href="/" class="nav-link">Home</a>
-                <a href="/image-analysis" class="nav-link">Image Analysis</a>
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">🧬</span>
+                <h1>AI Skin Health Advisor</h1>
             </div>
-        </nav>
-
-        <header class="page-header">
-            <h1>Weather-based Skin Health</h1>
-            <p>Get personalized skincare recommendations based on your local weather</p>
+            <p class="tagline">Personalized skincare recommendations powered by weather data & AI image analysis</p>
         </header>
 
+        <!-- Weather Search Section -->
         <section class="search-section">
+            <h2 class="section-title">🌤️ Weather-Based Analysis</h2>
             <div class="search-box">
-                <input type="text" id="cityInput" placeholder="Enter your city name..." />
-                <button class="btn-primary" id="searchBtn">
-                    Get Recommendations
-                </button>
-            </div>
-
-            <div id="loading" class="loading hidden">
-                <div class="spinner"></div>
-                <p>Analyzing weather conditions...</p>
+                <input type="text" id="cityInput" placeholder="Enter your city name (e.g., London, Tokyo, Mumbai)..." />
+                <button class="btn-primary" id="searchBtn">Get Recommendations</button>
             </div>
         </section>
 
+        <!-- OR Divider -->
+        <div class="divider">
+            <span>OR</span>
+        </div>
+
+        <!-- Image Upload Section -->
+        <section class="upload-section">
+            <h2 class="section-title">📸 Image-Based Analysis</h2>
+            <div class="upload-container" id="uploadContainer">
+                <div class="upload-box" id="uploadBox">
+                    <input type="file" id="fileInput" accept="image/*" hidden>
+                    <div class="upload-icon">📷</div>
+                    <h3>Upload Your Skin Photo</h3>
+                    <p>Click to browse or drag and drop your image here</p>
+                    <span class="file-info">Supports: JPG, PNG, JPEG (Max 5MB)</span>
+                </div>
+            </div>
+
+            <div class="preview-section hidden" id="previewSection">
+                <div class="image-preview">
+                    <img id="previewImage" alt="Preview">
+                    <button class="remove-btn" id="removeBtn">✕</button>
+                </div>
+                <button class="btn-primary" id="analyzeImageBtn">Analyze Skin Condition</button>
+            </div>
+        </section>
+
+        <!-- Loading Indicator -->
+        <div id="loading" class="loading hidden">
+            <div class="spinner"></div>
+            <p id="loadingText">Analyzing...</p>
+        </div>
+
+        <!-- Error Message -->
+        <div id="error" class="error-message hidden"></div>
+
+        <!-- Results Section -->
         <div id="results" class="results hidden">
-            <div class="weather-card">
-                <h2>Current Weather</h2>
+            <!-- Weather Card -->
+            <div class="weather-card" id="weatherCard">
+                <h2>Current Weather in <span id="cityName"></span></h2>
                 <div class="weather-info">
                     <div class="weather-main">
-                        <h3 id="cityName"></h3>
                         <div class="temp-display">
                             <span id="temperature" class="temperature"></span>
                             <span class="weather-icon" id="weatherIcon">🌤️</span>
@@ -79,34 +103,38 @@
                 </div>
             </div>
 
+            <!-- AI Predictions -->
             <div class="predictions-card">
                 <h2>🤖 AI-Predicted Skin Concerns</h2>
+                <p class="card-subtitle">Based on <span id="analysisType">weather conditions</span></p>
                 <div id="concernsGrid" class="concerns-grid"></div>
             </div>
 
+            <!-- Skincare Tips -->
             <div class="recommendations-card">
-                <h2>💡 Skincare Tips</h2>
+                <h2>💡 Personalized Skincare Tips</h2>
                 <ul id="tipsList" class="tips-list"></ul>
             </div>
 
+            <!-- Recommended Products -->
             <div class="products-card">
                 <h2>🧴 Recommended Products</h2>
                 <ul id="productsList" class="products-list"></ul>
             </div>
 
+            <!-- Warnings -->
             <div class="warnings-card">
                 <h2>⚠️ Important Warnings</h2>
                 <ul id="warningsList" class="warnings-list"></ul>
             </div>
         </div>
 
-        <div id="error" class="error-message hidden"></div>
-
         <footer class="footer">
-            <p>Powered by OpenWeatherMap API • AI/ML Predictions</p>
+            <p>Powered by OpenWeatherMap API • AI/ML Predictions • Pillow Image Analysis</p>
+            <p class="disclaimer">⚕️ This tool provides general guidance only. Consult a dermatologist for medical advice.</p>
         </footer>
     </div>
 
-    <script src="{{ url_for('static', filename='js/weather.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

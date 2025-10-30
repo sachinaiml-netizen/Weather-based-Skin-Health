@@ -55,7 +55,7 @@ function displayResults(data) {
     // Display weather information
     document.getElementById('cityName').textContent = data.city;
     document.getElementById('temperature').textContent = `${Math.round(data.weather.temperature)}°C`;
-    document.getElementById('weatherDesc').textContent = data.weather.description;
+    document.getElementById('weatherDescription').textContent = data.weather.description;
     document.getElementById('weatherIcon').textContent = getWeatherEmoji(data.weather.description);
     
     // Display weather details

@@ -171,12 +171,92 @@ Developed by Sachin
 - Weather data provided by [OpenWeatherMap](https://openweathermap.org/)
 - Skincare recommendations based on dermatological best practices
 
+## 📸 Image-Based Skin Analysis
+
+In addition to weather-based predictions, the app now supports **AI-powered image analysis**:
+
+### Features
+- **📤 Drag & Drop Upload**: Easy image upload with preview
+- **🔬 AI Skin Analysis**: Detects potential skin conditions from photos
+- **📊 Confidence Scoring**: Shows reliability of each prediction
+- **💡 Personalized Tips**: Recommendations based on detected concerns
+
+### Detected Conditions
+- Acne and breakouts
+- Redness and sensitivity
+- Dryness and dehydration
+- Dark spots and pigmentation
+- Oiliness
+
+### Usage
+1. Click the upload area or drag an image (JPG, PNG, JPEG)
+2. Maximum file size: 5MB
+3. Click "Analyze Skin Condition"
+4. View results with confidence scores and recommendations
+
+## 🚀 Deployment
+
+This application is ready to deploy on multiple platforms:
+
+### Deploy to Vercel ▲
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/sachinaiml-netizen/Weather-based-Skin-Health)
+
+```bash
+# Using Vercel CLI
+npm install -g vercel
+vercel login
+vercel
+```
+
+**Environment Variables**: Set `WEATHER_API_KEY` in Vercel dashboard
+
+### Deploy to Render
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
+
+**Configuration**:
+- Build Command: `pip install -r requirements.txt`
+- Start Command: `gunicorn app:app`
+- Add environment variable: `WEATHER_API_KEY`
+
+### Deploy to Heroku
+
+```bash
+heroku create weather-skin-health
+heroku config:set WEATHER_API_KEY=your_api_key_here
+git push heroku main
+```
+
+📖 **Detailed deployment guide**: See [DEPLOYMENT.md](DEPLOYMENT.md)
+
+## 📋 Requirements
+
+```
+Flask==3.0.0
+requests==2.31.0
+python-dotenv==1.0.0
+Werkzeug==3.0.1
+gunicorn==21.2.0
+Pillow==12.0.0
+```
+
+## 🔧 Configuration Files
+
+- **vercel.json**: Vercel deployment configuration
+- **Procfile**: Process configuration for Heroku/Render
+- **runtime.txt**: Python version specification
+- **.env.example**: Example environment variables
+
 ## Future Enhancements
 
-- [ ] UV Index API integration
+- [x] UV Index API integration ✅
+- [x] Image-based skin analysis ✅
+- [x] AI/ML prediction models ✅
+- [x] Dark theme UI ✅
 - [ ] User accounts and preferences
 - [ ] Weekly forecast and skincare planning
 - [ ] Mobile app version
 - [ ] Multi-language support
 - [ ] Air quality index integration
-- [ ] Personalized skin type analysis
+- [ ] Advanced AI models (CNN, transfer learning)

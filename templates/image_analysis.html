@@ -28,26 +28,26 @@
             <p>Upload a photo to detect skin conditions and get personalized recommendations</p>
         </header>
 
-        <section class="upload-section">
+        <section class="upload-section" id="uploadSection">
             <div class="upload-box" id="uploadBox">
-                <input type="file" id="imageInput" accept="image/*" onchange="handleImageUpload(event)" hidden>
-                <div class="upload-content" onclick="document.getElementById('imageInput').click()">
-                    <div class="upload-icon">📸</div>
+                <input type="file" id="fileInput" accept="image/*" hidden>
+                <div class="upload-icon">📸</div>
+                <div class="upload-content">
                     <h3>Upload Skin Image</h3>
                     <p>Click to browse or drag and drop</p>
                     <span class="file-types">JPG, PNG, JPEG (Max 5MB)</span>
                 </div>
             </div>
+        </section>
 
-            <div class="preview-container hidden" id="previewContainer">
-                <div class="image-preview">
-                    <img id="previewImage" alt="Preview">
-                    <button class="remove-btn" onclick="removeImage()">✕</button>
-                </div>
-                <button class="btn-primary" onclick="analyzeSkinImage()">
-                    Analyze Skin Condition
-                </button>
+        <section class="preview-container hidden" id="previewContainer">
+            <div class="image-preview" id="imagePreview">
+                <img id="previewImage" alt="Preview">
+                <button class="remove-btn" id="removeBtn">✕</button>
             </div>
+            <button class="btn-primary" id="analyzeBtn">
+                Analyze Skin Condition
+            </button>
 
             <div id="loading" class="loading hidden">
                 <div class="spinner"></div>
@@ -58,27 +58,27 @@
         <div id="results" class="results hidden">
             <div class="analysis-card">
                 <h2>🔬 Skin Analysis Results</h2>
-                <p class="analysis-subtitle">AI-powered detection from your uploaded image</p>
+                <p class="analysis-subtitle">Analysis Date: <span id="analysisDate"></span> at <span id="analysisTime"></span></p>
             </div>
 
             <div class="predictions-card">
                 <h2>🤖 Detected Skin Conditions</h2>
-                <div id="predictedConcerns" class="concerns-grid"></div>
+                <div id="concernsGrid" class="concerns-grid"></div>
             </div>
 
             <div class="recommendations-card">
                 <h2>💡 Skincare Tips</h2>
-                <ul id="skincareTips" class="tips-list"></ul>
+                <ul id="tipsList" class="tips-list"></ul>
             </div>
 
             <div class="products-card">
                 <h2>🧴 Recommended Products</h2>
-                <ul id="productsRecommended" class="products-list"></ul>
+                <ul id="productsList" class="products-list"></ul>
             </div>
 
-            <div id="warningsCard" class="warnings-card hidden">
+            <div class="warnings-card">
                 <h2>⚠️ Important Warnings</h2>
-                <ul id="warnings" class="warnings-list"></ul>
+                <ul id="warningsList" class="warnings-list"></ul>
             </div>
         </div>
 
