@@ -267,7 +267,16 @@ async function analyzeComplete() {
     errorMessage.classList.add('hidden');
     
     const formData = new FormData();
-    formData.append('city', weatherData.city);
+    
+    // Send coordinates if available (from geolocation), otherwise send city name
+    if (weatherData.coordinates && weatherData.coordinates.lat && weatherData.coordinates.lon) {
+        formData.append('lat', weatherData.coordinates.lat);
+        formData.append('lon', weatherData.coordinates.lon);
+        formData.append('city', weatherData.city); // Keep for display purposes
+    } else {
+        formData.append('city', weatherData.city);
+    }
+    
     formData.append('file', selectedFile);
     
     try {

@@ -1,11 +1,18 @@
 """
-TensorFlow/Keras-based Skin Condition Detection Model
+Advanced Computer Vision-based Skin Condition Detection Model
 Detects: Acne, Pigmentation, Sunburn, Fungal Infection, Eczema, Dryness
+Uses OpenCV and advanced image processing (TensorFlow optional)
 """
 
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import layers
+try:
+    import tensorflow as tf
+    from tensorflow import keras
+    from tensorflow.keras import layers
+    TENSORFLOW_AVAILABLE = True
+except ImportError:
+    TENSORFLOW_AVAILABLE = False
+    print("TensorFlow not available. Using advanced computer vision analysis.")
+
 import numpy as np
 import cv2
 from PIL import Image
@@ -29,6 +36,10 @@ class SkinConditionClassifier:
             'healthy'
         ]
         
+        if not TENSORFLOW_AVAILABLE:
+            print("Using advanced computer vision analysis (TensorFlow not available)")
+            return
+        
         if model_path:
             try:
                 self.model = keras.models.load_model(model_path)
@@ -45,6 +56,9 @@ class SkinConditionClassifier:
         Build a CNN model for skin condition classification
         Architecture based on proven image classification patterns
         """
+        if not TENSORFLOW_AVAILABLE:
+            return None
+            
         model = keras.Sequential([
             # Input layer
             layers.Input(shape=(224, 224, 3)),
@@ -171,6 +185,10 @@ class SkinConditionClassifier:
         features['avg_l'] = np.mean(img_lab[:, :, 0])  # Lightness
         features['avg_a'] = np.mean(img_lab[:, :, 1])  # Red-Green
         features['avg_b'] = np.mean(img_lab[:, :, 2])  # Yellow-Blue
+        
+        features['std_l'] = np.std(img_lab[:, :, 0])  # Lightness std dev
+        features['std_a'] = np.std(img_lab[:, :, 1])  # Red-Green std dev
+        features['std_b'] = np.std(img_lab[:, :, 2])  # Yellow-Blue std dev
         
         # Calculate redness index
         features['redness_index'] = (features['avg_red'] - (features['avg_green'] + features['avg_blue']) / 2)

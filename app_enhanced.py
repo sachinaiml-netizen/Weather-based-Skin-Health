@@ -107,16 +107,52 @@ def api_analyze_complete():
     Complete analysis combining weather + skin image
     Provides personalized recommendations based on both factors
     """
-    # Get weather data
+    # Get weather data - prefer coordinates over city name for precision
+    lat = request.form.get('lat')
+    lon = request.form.get('lon')
     city = request.form.get('city', '').strip()
     
-    if not city:
-        return jsonify({'error': 'City name is required'}), 400
-    
-    weather_data = get_comprehensive_weather(city)
-    
-    if not weather_data:
-        return jsonify({'error': f'Unable to fetch weather data for "{city}".'}), 404
+    if lat and lon:
+        # Use coordinates for precise weather data
+        try:
+            from weather_api import get_weather_data, get_uv_index, get_air_quality
+            import requests
+            
+            WEATHER_API_KEY = os.environ.get('WEATHER_API_KEY')
+            params = {
+                'lat': float(lat),
+                'lon': float(lon),
+                'appid': WEATHER_API_KEY,
+                'units': 'metric'
+            }
+            response = requests.get('https://api.openweathermap.org/data/2.5/weather', params=params)
+            base_weather = response.json()
+            
+            uv_index = get_uv_index(float(lat), float(lon))
+            air_quality = get_air_quality(float(lat), float(lon))
+            
+            # Build comprehensive weather data from coordinates
+            weather_data = {
+                'temperature': base_weather['main']['temp'],
+                'humidity': base_weather['main']['humidity'],
+                'uv_index': uv_index,
+                'weather_main': base_weather['weather'][0]['main'],
+                'weather_description': base_weather['weather'][0]['description'],
+                'city': city if city else base_weather.get('name', 'Your Location'),
+                'aqi': air_quality['aqi'] if air_quality else None,
+                'pm2_5': air_quality['pm2_5'] if air_quality else None
+            }
+        except Exception as e:
+            print(f"Error fetching weather by coordinates: {e}")
+            return jsonify({'error': 'Unable to fetch weather data for your location'}), 500
+    elif city:
+        # Fallback to city name
+        weather_data = get_comprehensive_weather(city)
+        
+        if not weather_data:
+            return jsonify({'error': f'Unable to fetch weather data for "{city}".'}), 404
+    else:
+        return jsonify({'error': 'Location information is required'}), 400
     
     # Get skin analysis
     skin_conditions = []
@@ -160,6 +196,7 @@ def api_analyze_complete():
 def api_geolocation():
     """
     Get weather data based on geolocation coordinates
+    Shows precise location with coordinates
     """
     data = request.get_json()
     lat = data.get('lat')
@@ -175,6 +212,7 @@ def api_geolocation():
         WEATHER_API_KEY = os.environ.get('WEATHER_API_KEY')
         import requests
         
+        # Get weather data
         params = {
             'lat': lat,
             'lon': lon,
@@ -184,13 +222,46 @@ def api_geolocation():
         response = requests.get('https://api.openweathermap.org/data/2.5/weather', params=params)
         weather_data = response.json()
         
+        # Try to get more precise location name using reverse geocoding
+        try:
+            geocode_params = {
+                'lat': lat,
+                'lon': lon,
+                'limit': 1,
+                'appid': WEATHER_API_KEY
+            }
+            geocode_response = requests.get(
+                'https://api.openweathermap.org/geo/1.0/reverse', 
+                params=geocode_params,
+                timeout=5
+            )
+            geocode_data = geocode_response.json()
+            
+            if geocode_data and len(geocode_data) > 0:
+                location_info = geocode_data[0]
+                # Build detailed location name
+                location_parts = []
+                if location_info.get('name'):
+                    location_parts.append(location_info['name'])
+                if location_info.get('state'):
+                    location_parts.append(location_info['state'])
+                
+                precise_location = ', '.join(location_parts) if location_parts else weather_data.get('name', 'Your Location')
+            else:
+                precise_location = weather_data.get('name', 'Your Location')
+        except:
+            precise_location = weather_data.get('name', 'Your Location')
+        
+        # Add coordinate display for precision
+        coord_display = f"📍 {lat:.4f}°, {lon:.4f}°"
+        
         uv_index = get_uv_index(lat, lon)
         air_quality = get_air_quality(lat, lon)
         
         result = {
-            'city': weather_data.get('name', 'Your Location'),
+            'city': f"{precise_location} {coord_display}",
             'country': weather_data['sys'].get('country', ''),
-            'coordinates': {'lat': lat, 'lon': lon},
+            'coordinates': {'lat': round(lat, 4), 'lon': round(lon, 4)},
             'weather': {
                 'temperature': weather_data['main']['temp'],
                 'feels_like': weather_data['main']['feels_like'],
