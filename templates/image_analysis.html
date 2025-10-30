@@ -8,9 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="stars"></div>
-    <div class="twinkling"></div>
-    
     <div class="container">
         <nav class="navbar">
             <a href="/" class="logo">
@@ -25,9 +22,16 @@
 
         <header class="page-header">
             <h1>Skin Image Analysis</h1>
-            <p>Upload a photo to detect skin conditions and get personalized recommendations</p>
+            <p>Upload a photo or use your camera to detect skin conditions and get personalized recommendations</p>
         </header>
 
+        <!-- Mode Toggle -->
+        <div class="mode-toggle">
+            <button class="mode-btn active" data-mode="upload">📤 Upload Image</button>
+            <button class="mode-btn" data-mode="camera">📸 Use Camera</button>
+        </div>
+
+        <!-- Upload Section -->
         <section class="upload-section" id="uploadSection">
             <div class="upload-box" id="uploadBox">
                 <input type="file" id="fileInput" accept="image/*" hidden>
@@ -36,6 +40,25 @@
                     <h3>Upload Skin Image</h3>
                     <p>Click to browse or drag and drop</p>
                     <span class="file-types">JPG, PNG, JPEG (Max 5MB)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Camera Section -->
+        <section class="camera-section hidden" id="cameraSection">
+            <div class="camera-container">
+                <div class="camera-box">
+                    <video id="cameraVideo" autoplay playsinline></video>
+                    <canvas id="cameraCanvas" hidden></canvas>
+                    <div class="face-guide">
+                        <div class="guide-circle"></div>
+                        <p class="guide-text">Position your face in the circle</p>
+                    </div>
+                </div>
+                <div class="camera-controls">
+                    <button class="btn-primary" id="startCameraBtn">Start Camera</button>
+                    <button class="btn-primary hidden" id="captureBtn">📸 Capture Photo</button>
+                    <button class="btn-secondary hidden" id="stopCameraBtn">Stop Camera</button>
                 </div>
             </div>
         </section>

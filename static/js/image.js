@@ -1,5 +1,6 @@
 // Image Analysis Page JavaScript
 
+// Upload elements
 const uploadBox = document.getElementById('uploadBox');
 const fileInput = document.getElementById('fileInput');
 const uploadSection = document.getElementById('uploadSection');
@@ -12,7 +13,117 @@ const loadingDiv = document.getElementById('loading');
 const errorDiv = document.getElementById('error');
 const resultsDiv = document.getElementById('results');
 
+// Camera elements
+const cameraSection = document.getElementById('cameraSection');
+const cameraVideo = document.getElementById('cameraVideo');
+const cameraCanvas = document.getElementById('cameraCanvas');
+const startCameraBtn = document.getElementById('startCameraBtn');
+const captureBtn = document.getElementById('captureBtn');
+const stopCameraBtn = document.getElementById('stopCameraBtn');
+const modeBtns = document.querySelectorAll('.mode-btn');
+
 let selectedFile = null;
+let stream = null;
+let currentMode = 'upload';
+
+// Mode toggle
+modeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const mode = btn.dataset.mode;
+        switchMode(mode);
+    });
+});
+
+function switchMode(mode) {
+    currentMode = mode;
+    
+    // Update button states
+    modeBtns.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === mode);
+    });
+    
+    // Show/hide sections
+    if (mode === 'upload') {
+        uploadSection.classList.remove('hidden');
+        cameraSection.classList.add('hidden');
+        stopCamera();
+    } else {
+        uploadSection.classList.add('hidden');
+        cameraSection.classList.remove('hidden');
+        previewContainer.classList.add('hidden');
+    }
+    
+    // Reset results
+    resultsDiv.classList.add('hidden');
+    errorDiv.classList.add('hidden');
+}
+
+// Camera controls
+startCameraBtn.addEventListener('click', startCamera);
+captureBtn.addEventListener('click', capturePhoto);
+stopCameraBtn.addEventListener('click', stopCamera);
+
+async function startCamera() {
+    try {
+        stream = await navigator.mediaDevices.getUserMedia({ 
+            video: { 
+                facingMode: 'user',
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
+            } 
+        });
+        
+        cameraVideo.srcObject = stream;
+        
+        // Update UI
+        startCameraBtn.classList.add('hidden');
+        captureBtn.classList.remove('hidden');
+        stopCameraBtn.classList.remove('hidden');
+        errorDiv.classList.add('hidden');
+        
+    } catch (error) {
+        console.error('Camera error:', error);
+        showError('Unable to access camera. Please check permissions.');
+    }
+}
+
+function capturePhoto() {
+    // Set canvas size to video size
+    cameraCanvas.width = cameraVideo.videoWidth;
+    cameraCanvas.height = cameraVideo.videoHeight;
+    
+    // Draw video frame to canvas
+    const ctx = cameraCanvas.getContext('2d');
+    ctx.drawImage(cameraVideo, 0, 0);
+    
+    // Convert canvas to blob
+    cameraCanvas.toBlob((blob) => {
+        selectedFile = new File([blob], 'camera-capture.jpg', { type: 'image/jpeg' });
+        
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            previewImage.src = e.target.result;
+            cameraSection.classList.add('hidden');
+            previewContainer.classList.remove('hidden');
+            stopCamera();
+        };
+        reader.readAsDataURL(selectedFile);
+    }, 'image/jpeg', 0.95);
+}
+
+function stopCamera() {
+    if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+        cameraVideo.srcObject = null;
+    }
+    
+    // Reset UI
+    startCameraBtn.classList.remove('hidden');
+    captureBtn.classList.add('hidden');
+    stopCameraBtn.classList.add('hidden');
+}
 
 // Click upload box to select file
 uploadBox.addEventListener('click', () => {
