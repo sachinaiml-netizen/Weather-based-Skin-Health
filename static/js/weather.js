@@ -2,17 +2,97 @@
 
 const cityInput = document.getElementById('cityInput');
 const searchBtn = document.getElementById('searchBtn');
+const locationBtn = document.getElementById('locationBtn');
 const loadingDiv = document.getElementById('loading');
 const errorDiv = document.getElementById('error');
 const resultsDiv = document.getElementById('results');
 
 // Event listeners
 searchBtn.addEventListener('click', analyzeWeather);
+locationBtn.addEventListener('click', useCurrentLocation);
 cityInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
         analyzeWeather();
     }
 });
+
+// Current Location Function
+async function useCurrentLocation() {
+    if (!navigator.geolocation) {
+        showError('Geolocation is not supported by your browser');
+        return;
+    }
+    
+    // Show loading
+    loadingDiv.classList.remove('hidden');
+    resultsDiv.classList.add('hidden');
+    errorDiv.classList.add('hidden');
+    locationBtn.disabled = true;
+    locationBtn.textContent = '📍 Getting Location...';
+    
+    navigator.geolocation.getCurrentPosition(
+        async (position) => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            
+            console.log('GPS Coordinates:', { lat, lon });
+            
+            try {
+                const response = await fetch('/api/analyze-location', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        latitude: lat, 
+                        longitude: lon 
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    displayResults(data);
+                } else {
+                    showError(data.error || 'Failed to fetch weather data');
+                }
+            } catch (error) {
+                showError('Network error. Please try again.');
+                console.error('Error:', error);
+            } finally {
+                loadingDiv.classList.add('hidden');
+                locationBtn.disabled = false;
+                locationBtn.innerHTML = '<span class="location-icon">📍</span> Use Current Location';
+            }
+        },
+        (error) => {
+            loadingDiv.classList.add('hidden');
+            locationBtn.disabled = false;
+            locationBtn.innerHTML = '<span class="location-icon">📍</span> Use Current Location';
+            
+            let errorMessage = 'Unable to get your location. ';
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    errorMessage += 'Please enable location permissions.';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    errorMessage += 'Location information is unavailable.';
+                    break;
+                case error.TIMEOUT:
+                    errorMessage += 'Location request timed out.';
+                    break;
+                default:
+                    errorMessage += 'An unknown error occurred.';
+            }
+            showError(errorMessage);
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+        }
+    );
+}
 
 async function analyzeWeather() {
     const city = cityInput.value.trim();

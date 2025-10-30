@@ -372,6 +372,85 @@ def api_analyze():
     
     return jsonify(response)
 
+@app.route('/api/analyze-location', methods=['POST'])
+def api_analyze_location():
+    """API endpoint to get weather-based skin care recommendations using GPS coordinates"""
+    data = request.get_json()
+    latitude = data.get('latitude')
+    longitude = data.get('longitude')
+    
+    if not latitude or not longitude:
+        return jsonify({'error': 'Latitude and longitude are required'}), 400
+    
+    try:
+        # Get weather data using coordinates
+        params = {
+            'lat': latitude,
+            'lon': longitude,
+            'appid': WEATHER_API_KEY,
+            'units': 'metric'
+        }
+        
+        response = requests.get(WEATHER_API_URL, params=params, timeout=10)
+        
+        if response.status_code != 200:
+            return jsonify({'error': 'Unable to fetch weather data for your location'}), 400
+        
+        weather_data = response.json()
+        
+        # Get UV index
+        uv_index = get_uv_index(latitude, longitude)
+        
+        # Predict skin concerns
+        predicted_concerns = predict_skin_concerns(weather_data, uv_index)
+        
+        # Format response
+        result = {
+            'city': f"{weather_data['name']}, {weather_data.get('sys', {}).get('country', '')}",
+            'coordinates': {
+                'latitude': latitude,
+                'longitude': longitude
+            },
+            'weather': {
+                'temperature': weather_data['main']['temp'],
+                'feels_like': weather_data['main']['feels_like'],
+                'humidity': weather_data['main']['humidity'],
+                'pressure': weather_data['main']['pressure'],
+                'description': weather_data['weather'][0]['description'],
+                'wind_speed': weather_data['wind']['speed'],
+                'uv_index': round(uv_index, 1)
+            },
+            'predictions': {},
+            'recommendations': [],
+            'products': [],
+            'warnings': []
+        }
+        
+        # Format predictions
+        for concern in predicted_concerns:
+            result['predictions'][concern['type'].lower()] = {
+                'score': concern['score'],
+                'risk_level': concern['risk'],
+                'confidence': concern['confidence']
+            }
+        
+        # Get detailed recommendations
+        recommendations = get_skin_recommendations(weather_data)
+        result['recommendations'] = recommendations['skincare_tips']
+        result['products'] = recommendations['products_recommended']
+        result['warnings'] = recommendations['warnings']
+        
+        return jsonify(result)
+        
+    except requests.exceptions.Timeout:
+        return jsonify({'error': 'Weather service timed out. Please try again.'}), 504
+    except requests.exceptions.RequestException as e:
+        print(f"Weather API error: {e}")
+        return jsonify({'error': 'Unable to connect to weather service'}), 503
+    except Exception as e:
+        print(f"Error in analyze_location: {e}")
+        return jsonify({'error': 'An error occurred while processing your request'}), 500
+
 @app.route('/health')
 def health():
     """Health check endpoint"""

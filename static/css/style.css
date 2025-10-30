@@ -212,6 +212,79 @@ body {
     color: var(--text-secondary);
 }
 
+.location-divider {
+    text-align: center;
+    margin: 25px 0;
+    position: relative;
+}
+
+.location-divider::before,
+.location-divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 40%;
+    height: 1px;
+    background: var(--border);
+}
+
+.location-divider::before {
+    left: 0;
+}
+
+.location-divider::after {
+    right: 0;
+}
+
+.location-divider span {
+    background: var(--bg-primary);
+    padding: 0 15px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.location-button-container {
+    text-align: center;
+}
+
+.btn-location {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 40px;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 2px solid var(--accent);
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-location:hover {
+    background: var(--accent);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+}
+
+.location-icon {
+    font-size: 20px;
+    animation: bounce 2s infinite;
+}
+
+.location-hint {
+    margin-top: 10px;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
 .btn-primary {
     padding: 15px 30px;
     background: var(--accent);
