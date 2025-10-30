@@ -12,30 +12,36 @@ This project develops an **AI/ML-based weather-aware skincare system** that anal
 
 ## ✨ Key Features
 
-### AI/ML Predictions
-- **🤖 Intelligent Skin Concern Prediction**: Machine learning model that analyzes multiple weather factors
-- **📊 Risk Scoring System**: Calculates risk scores (0-100) for different skin concerns
-- **🎯 Confidence Metrics**: Displays AI confidence levels for each prediction
-- **🔍 Multi-factor Analysis**: Evaluates temperature, humidity, UV index, wind speed, and weather conditions
+### 🎥 Real-time Camera Analysis
+- **📷 Live Webcam Capture**: Capture skin images directly from your device camera
+- **🎯 Face Positioning Guide**: Animated guide circle for perfect photo alignment
+- **🔄 Camera Switching**: Toggle between front and back camera (mobile devices)
+- **� Instant Snapshot**: One-click photo capture for immediate analysis
+- **💡 Smart Lighting Tips**: Guidance for optimal photo conditions
 
-### Predicted Skin Concerns
-- **🏜️ Dryness**: Predicts dry skin risk based on low humidity, cold temperature, and wind
-- **🔴 Acne**: Analyzes high humidity and temperature for breakout risk
-- **☀️ Sunburn**: UV index-based sun damage prediction
-- **⚠️ Sensitivity**: Extreme weather and wind impact assessment
-- **💧 Oiliness**: High humidity and temperature oil production analysis
+### 🧬 Advanced AI/ML Skin Detection
+- **🤖 Computer Vision Analysis**: OpenCV-based multi-factor skin condition detection
+- **📊 7 Condition Types**: Detects Acne, Pigmentation, Sunburn, Fungal Infection, Eczema, Dryness, Healthy
+- **🎯 Confidence Scores**: Each detection includes confidence percentage (55-95%)
+- **🔍 Multi-Color Space Analysis**: RGB, HSV, and LAB color space feature extraction
+- **📈 Severity Classification**: High, Moderate, and Low severity levels
+- **🏷️ Visual Indicators**: Shows specific indicators like "Redness", "Texture Irregularity", etc.
 
-### Real-time Weather Integration
-- Current temperature, humidity, and wind speed
-- **UV Index monitoring** with risk categorization
-- Weather condition analysis (sunny, rainy, snowy, etc.)
-- Location-based data from any city worldwide
+### 🌍 Precise GPS-Based Weather Integration
+- **📍 Exact Location Detection**: Uses GPS coordinates (not just city names)
+- **🌡️ Micro-Climate Data**: Weather specific to your exact position (±11 meters)
+- **☀️ UV Index Monitoring**: Real-time UV risk categorization
+- **💨 Air Quality (AQI)**: PM2.5 and PM10 pollution levels
+- **🗺️ Reverse Geocoding**: Shows detailed location (neighborhood, state, coordinates)
+- **🌤️ Real-time Updates**: Temperature, humidity, pressure, wind speed
 
-### Personalized Recommendations
-- Customized skincare tips based on predicted concerns
-- Specific product recommendations (cleansers, moisturizers, sunscreens, serums)
-- Health warnings for extreme conditions
-- Dermatologist-backed advice
+### 💡 Personalized Skincare Recommendations
+- **🎯 Priority Actions**: Top 3 immediate actions based on your skin + weather
+- **🧴 Custom Routine**: Step-by-step morning/evening skincare routine
+- **🛒 Product Suggestions**: 15+ specific product recommendations
+- **🌟 Lifestyle Tips**: Diet, hydration, sleep advice for better skin
+- **⚠️ Weather Warnings**: Alerts for UV exposure, pollution, extreme conditions
+- **📊 Risk Analysis**: Combined skin condition + environmental factor assessment
 
 ## Installation
 
@@ -65,9 +71,11 @@ pip install -r requirements.txt
 
 ## Usage
 
+### Local Development
+
 1. Start the Flask application:
 ```bash
-python app.py
+python app_enhanced.py
 ```
 
 2. Open your browser and navigate to:
@@ -75,7 +83,76 @@ python app.py
 http://localhost:5000
 ```
 
-3. Enter your city name to get personalized skincare recommendations!
+3. Use the application:
+   - Get weather data using "Use My Location" or enter a city name
+   - Upload a skin image or use your camera to capture one
+   - Get AI-powered skin analysis and personalized recommendations
+
+### Deploy to Web (Make it Accessible Online)
+
+#### Option 1: Render (Recommended - Free & Easy)
+
+1. **Push your code to GitHub** (already done ✅)
+
+2. **Go to [Render.com](https://render.com)** and sign up
+
+3. **Create a New Web Service**:
+   - Click "New +" → "Web Service"
+   - Connect your GitHub account
+   - Select repository: `Weather-based-Skin-Health`
+   - Configure:
+     - **Name**: `weather-skin-analyzer`
+     - **Environment**: `Python 3`
+     - **Build Command**: `pip install -r requirements.txt`
+     - **Start Command**: `gunicorn app_enhanced:app`
+   
+4. **Add Environment Variable**:
+   - Go to "Environment" tab
+   - Add: `WEATHER_API_KEY` = `your_openweathermap_api_key`
+
+5. **Deploy**:
+   - Click "Create Web Service"
+   - Wait 2-3 minutes for deployment
+   - Your app will be live at: `https://weather-skin-analyzer.onrender.com`
+
+#### Option 2: Vercel (Fast Deployment)
+
+```bash
+# Install Vercel CLI
+npm install -g vercel
+
+# Deploy
+cd Weather-based-Skin-Health
+vercel
+
+# Follow the prompts, your app will be live at: https://your-app.vercel.app
+```
+
+#### Option 3: Heroku
+
+```bash
+# Install Heroku CLI from https://devcenter.heroku.com/articles/heroku-cli
+
+# Login and deploy
+heroku login
+heroku create your-skin-analyzer
+git push heroku main
+heroku config:set WEATHER_API_KEY=your_api_key_here
+heroku open
+```
+
+#### Option 4: Quick Share (Temporary - ngrok)
+
+For quick temporary sharing without deployment:
+
+```bash
+# Download ngrok from https://ngrok.com
+# Start your Flask app, then in another terminal:
+ngrok http 5000
+
+# Share the https://xxx.ngrok.io URL with anyone
+# Works only while your server is running
+```
 
 ## API Endpoints
 
@@ -117,41 +194,74 @@ The application analyzes multiple weather factors:
 
 ### Backend
 - **Flask 3.0.0**: Python web framework
-- **Python 3.11+**: Core programming language
-- **OpenWeatherMap API**: Real-time weather data
-- **Custom ML Algorithms**: Skin concern prediction models
+- **Python 3.14+**: Core programming language
+- **OpenWeatherMap API**: Real-time weather data with reverse geocoding
+- **Gunicorn 21.2.0**: Production WSGI server
+
+### AI/ML & Computer Vision
+- **OpenCV 4.11.0**: Advanced image processing and analysis
+- **NumPy 2.3.4**: Numerical computing for feature extraction
+- **scikit-learn 1.7.2**: Machine learning utilities
+- **Pillow 12.0.0**: Image handling and preprocessing
+- **Multi-Color Space Analysis**: RGB, HSV, LAB feature extraction
+- **Edge Detection**: Canny edge detection for texture analysis
+- **Statistical Analysis**: Mean, variance, standard deviation calculations
 
 ### Frontend
-- **HTML5**: Semantic markup
-- **CSS3**: Modern styling with animations and gradients
-- **JavaScript (ES6+)**: Interactive functionality
+- **HTML5**: Semantic markup with modern accessibility
+- **CSS3**: Gradient backgrounds, animations, responsive design
+- **Vanilla JavaScript (ES6+)**: Camera API, geolocation, async operations
+- **MediaDevices API**: WebRTC camera access
+- **Canvas API**: Image capture and processing
+- **Geolocation API**: GPS coordinate detection
 - **Google Fonts**: Inter typography
 
-### AI/ML Model
-- **Multi-factor Analysis**: Temperature, humidity, UV, wind, conditions
-- **Weighted Scoring System**: Risk calculation algorithms
-- **Confidence Metrics**: Prediction reliability scoring
-- **Real-time Processing**: Instant analysis and recommendations
+### APIs & Services
+- **OpenWeatherMap Weather API**: Current weather conditions
+- **OpenWeatherMap UV API**: Real-time UV index
+- **OpenWeatherMap Air Pollution API**: AQI and PM2.5/PM10 data
+- **OpenWeatherMap Geocoding API**: Reverse geocoding for precise location names
+
+### Development Tools
+- **python-dotenv**: Environment variable management
+- **Werkzeug 3.0.1**: WSGI utilities
+- **Git & GitHub**: Version control and collaboration
 
 ## Project Structure
 
 ```
 Weather-based-Skin-Health/
 │
-├── app.py                  # Main Flask application
-├── requirements.txt        # Python dependencies
-├── .env                    # Environment variables (not in repo)
+├── app_enhanced.py           # Main Flask application with AI/ML integration
+├── skin_model.py            # OpenCV-based skin condition classifier
+├── weather_api.py           # Weather API integration (UV, AQI, geocoding)
+├── recommendations_engine.py # AI recommendation generation (500+ lines)
+├── requirements.txt         # Python dependencies
+├── runtime.txt             # Python version for deployment
+├── Procfile                # Heroku deployment config
+├── render.yaml             # Render deployment config
+├── vercel.json             # Vercel deployment config
+├── .env                    # Environment variables (create this)
 ├── .gitignore             # Git ignore file
-├── README.md              # This file
+├── README.md              # Documentation
 │
 ├── static/
 │   ├── css/
-│   │   └── style.css      # Custom styles
+│   │   ├── style.css      # Original styles
+│   │   └── analyzer.css   # Modern gradient UI with dark theme
 │   └── js/
-│       └── script.js      # Frontend JavaScript
+│       ├── main.js        # Original JavaScript
+│       ├── analyzer.js    # Enhanced analyzer with camera support
+│       └── camera.js      # Camera manager module (190+ lines)
 │
-└── templates/
-    └── index.html         # Main HTML template
+├── templates/
+│   ├── index.html         # Original home page
+│   ├── home.html          # Landing page
+│   ├── weather.html       # Weather display
+│   ├── image_analysis.html # Image upload page
+│   └── analyzer.html      # Main AI analyzer interface (camera + upload)
+│
+└── uploads/              # Temporary image uploads (auto-created)
 ```
 
 ## Contributing
@@ -171,92 +281,19 @@ Developed by Sachin
 - Weather data provided by [OpenWeatherMap](https://openweathermap.org/)
 - Skincare recommendations based on dermatological best practices
 
-## 📸 Image-Based Skin Analysis
-
-In addition to weather-based predictions, the app now supports **AI-powered image analysis**:
-
-### Features
-- **📤 Drag & Drop Upload**: Easy image upload with preview
-- **🔬 AI Skin Analysis**: Detects potential skin conditions from photos
-- **📊 Confidence Scoring**: Shows reliability of each prediction
-- **💡 Personalized Tips**: Recommendations based on detected concerns
-
-### Detected Conditions
-- Acne and breakouts
-- Redness and sensitivity
-- Dryness and dehydration
-- Dark spots and pigmentation
-- Oiliness
-
-### Usage
-1. Click the upload area or drag an image (JPG, PNG, JPEG)
-2. Maximum file size: 5MB
-3. Click "Analyze Skin Condition"
-4. View results with confidence scores and recommendations
-
-## 🚀 Deployment
-
-This application is ready to deploy on multiple platforms:
-
-### Deploy to Vercel ▲
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/sachinaiml-netizen/Weather-based-Skin-Health)
-
-```bash
-# Using Vercel CLI
-npm install -g vercel
-vercel login
-vercel
-```
-
-**Environment Variables**: Set `WEATHER_API_KEY` in Vercel dashboard
-
-### Deploy to Render
-
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
-
-**Configuration**:
-- Build Command: `pip install -r requirements.txt`
-- Start Command: `gunicorn app:app`
-- Add environment variable: `WEATHER_API_KEY`
-
-### Deploy to Heroku
-
-```bash
-heroku create weather-skin-health
-heroku config:set WEATHER_API_KEY=your_api_key_here
-git push heroku main
-```
-
-📖 **Detailed deployment guide**: See [DEPLOYMENT.md](DEPLOYMENT.md)
-
-## 📋 Requirements
-
-```
-Flask==3.0.0
-requests==2.31.0
-python-dotenv==1.0.0
-Werkzeug==3.0.1
-gunicorn==21.2.0
-Pillow==12.0.0
-```
-
-## 🔧 Configuration Files
-
-- **vercel.json**: Vercel deployment configuration
-- **Procfile**: Process configuration for Heroku/Render
-- **runtime.txt**: Python version specification
-- **.env.example**: Example environment variables
-
 ## Future Enhancements
 
-- [x] UV Index API integration ✅
-- [x] Image-based skin analysis ✅
-- [x] AI/ML prediction models ✅
-- [x] Dark theme UI ✅
+- [x] UV Index API integration
+- [x] Air quality index integration
+- [x] Real-time webcam face analysis
+- [x] Advanced AI/ML skin condition detection
+- [x] GPS-based precise location detection
 - [ ] User accounts and preferences
+- [ ] Skin condition tracking history
 - [ ] Weekly forecast and skincare planning
-- [ ] Mobile app version
+- [ ] Mobile app version (React Native)
 - [ ] Multi-language support
-- [ ] Air quality index integration
-- [ ] Advanced AI models (CNN, transfer learning)
+- [ ] Dermatologist consultation API
+- [ ] Product purchase integration
+- [ ] Social sharing features
+- [ ] Skin type quiz and personalization

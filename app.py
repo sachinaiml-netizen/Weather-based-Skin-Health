@@ -303,8 +303,18 @@ def get_skin_recommendations(weather_data):
 
 @app.route('/')
 def index():
-    """Render the main page with both weather and image analysis"""
-    return render_template('index.html')
+    """Render the home page"""
+    return render_template('home.html')
+
+@app.route('/weather')
+def weather_page():
+    """Render the weather analysis page"""
+    return render_template('weather.html')
+
+@app.route('/image-analysis')
+def image_analysis_page():
+    """Render the image analysis page"""
+    return render_template('image_analysis.html')
 
 @app.route('/api/analyze', methods=['POST'])
 def api_analyze():
