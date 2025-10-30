@@ -80,25 +80,75 @@
             <!-- Section 2: Image Upload -->
             <section class="card upload-section">
                 <div class="card-header">
-                    <h2>📸 Step 2: Upload Your Skin Image</h2>
+                    <h2>📸 Step 2: Capture or Upload Your Skin Image</h2>
                     <p>AI will detect: Acne, Pigmentation, Sunburn, Fungal Infection, Eczema, Dryness</p>
                 </div>
                 <div class="card-body">
+                    <!-- Mode Selection Tabs -->
+                    <div class="upload-tabs">
+                        <button id="uploadTab" class="tab-btn active" data-mode="upload">
+                            <span class="tab-icon">📤</span>
+                            Upload Image
+                        </button>
+                        <button id="cameraTab" class="tab-btn" data-mode="camera">
+                            <span class="tab-icon">📷</span>
+                            Use Camera
+                        </button>
+                    </div>
+
                     <div class="upload-container">
-                        <div id="dropZone" class="drop-zone">
-                            <div class="drop-zone-content">
-                                <div class="upload-icon">📤</div>
-                                <h3>Drag & Drop Your Image Here</h3>
-                                <p>or click to browse</p>
-                                <p class="upload-note">Supported: JPG, PNG, JPEG | Max: 5MB</p>
-                                <input type="file" id="fileInput" accept="image/*" hidden />
-                                <button class="btn btn-outline" onclick="document.getElementById('fileInput').click()">
-                                    Choose File
-                                </button>
+                        <!-- Upload Mode -->
+                        <div id="uploadMode" class="upload-mode active">
+                            <div id="dropZone" class="drop-zone">
+                                <div class="drop-zone-content">
+                                    <div class="upload-icon">📤</div>
+                                    <h3>Drag & Drop Your Image Here</h3>
+                                    <p>or click to browse</p>
+                                    <p class="upload-note">Supported: JPG, PNG, JPEG | Max: 5MB</p>
+                                    <input type="file" id="fileInput" accept="image/*" hidden />
+                                    <button class="btn btn-outline" onclick="document.getElementById('fileInput').click()">
+                                        Choose File
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Camera Mode -->
+                        <div id="cameraMode" class="camera-mode hidden">
+                            <div class="camera-container">
+                                <div class="camera-view">
+                                    <video id="cameraVideo" autoplay playsinline></video>
+                                    <canvas id="cameraCanvas" style="display: none;"></canvas>
+                                    <div class="camera-overlay">
+                                        <div class="face-guide">
+                                            <div class="guide-circle"></div>
+                                            <p class="guide-text">Position your face in the circle</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="camera-controls">
+                                    <button id="startCameraBtn" class="btn btn-primary">
+                                        <span class="btn-icon">📷</span>
+                                        Start Camera
+                                    </button>
+                                    <button id="captureBtn" class="btn btn-success hidden">
+                                        <span class="btn-icon">📸</span>
+                                        Capture Photo
+                                    </button>
+                                    <button id="switchCameraBtn" class="btn btn-secondary hidden">
+                                        <span class="btn-icon">🔄</span>
+                                        Switch Camera
+                                    </button>
+                                    <button id="stopCameraBtn" class="btn btn-danger hidden">
+                                        <span class="btn-icon">⏹</span>
+                                        Stop Camera
+                                    </button>
+                                </div>
+                                <p class="camera-note">💡 Tip: Ensure good lighting for best results</p>
                             </div>
                         </div>
                         
-                        <!-- Image Preview -->
+                        <!-- Image Preview (Shared) -->
                         <div id="imagePreview" class="image-preview hidden">
                             <div class="preview-header">
                                 <h4>Selected Image</h4>
@@ -230,6 +280,7 @@
         </div>
     </footer>
 
+    <script src="/static/js/camera.js"></script>
     <script src="/static/js/analyzer.js"></script>
 </body>
 </html>

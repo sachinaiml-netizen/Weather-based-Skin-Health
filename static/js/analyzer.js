@@ -2,6 +2,8 @@
 
 let weatherData = null;
 let selectedFile = null;
+let cameraManager = null;
+let currentMode = 'upload'; // 'upload' or 'camera'
 
 // DOM Elements
 const cityInput = document.getElementById('cityInput');
@@ -20,9 +22,22 @@ const errorMessage = document.getElementById('errorMessage');
 const errorText = document.getElementById('errorText');
 const dismissError = document.getElementById('dismissError');
 
+// Camera Elements
+const uploadTab = document.getElementById('uploadTab');
+const cameraTab = document.getElementById('cameraTab');
+const uploadMode = document.getElementById('uploadMode');
+const cameraMode = document.getElementById('cameraMode');
+const cameraVideo = document.getElementById('cameraVideo');
+const cameraCanvas = document.getElementById('cameraCanvas');
+const startCameraBtn = document.getElementById('startCameraBtn');
+const captureBtn = document.getElementById('captureBtn');
+const switchCameraBtn = document.getElementById('switchCameraBtn');
+const stopCameraBtn = document.getElementById('stopCameraBtn');
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
+    initializeCamera();
 });
 
 function setupEventListeners() {
@@ -40,6 +55,16 @@ function setupEventListeners() {
     fileInput.addEventListener('change', handleFileSelect);
     removeImageBtn.addEventListener('click', removeImage);
     
+    // Camera mode tabs
+    uploadTab.addEventListener('click', () => switchMode('upload'));
+    cameraTab.addEventListener('click', () => switchMode('camera'));
+    
+    // Camera controls
+    startCameraBtn.addEventListener('click', startCamera);
+    captureBtn.addEventListener('click', capturePhoto);
+    switchCameraBtn.addEventListener('click', switchCamera);
+    stopCameraBtn.addEventListener('click', stopCamera);
+    
     // Analyze button
     analyzeBtn.addEventListener('click', analyzeComplete);
     
@@ -47,6 +72,146 @@ function setupEventListeners() {
     dismissError.addEventListener('click', () => {
         errorMessage.classList.add('hidden');
     });
+}
+
+// Camera Initialization
+function initializeCamera() {
+    if (typeof CameraManager !== 'undefined') {
+        cameraManager = new CameraManager();
+        cameraManager.initialize(cameraVideo, cameraCanvas);
+        
+        // Check camera support
+        if (!cameraManager.isSupported()) {
+            cameraTab.disabled = true;
+            cameraTab.title = 'Camera not supported on this device';
+        }
+    } else {
+        console.warn('CameraManager not loaded');
+        cameraTab.disabled = true;
+    }
+}
+
+// Mode Switching
+function switchMode(mode) {
+    currentMode = mode;
+    
+    if (mode === 'upload') {
+        // Switch to upload mode
+        uploadTab.classList.add('active');
+        cameraTab.classList.remove('active');
+        uploadMode.classList.remove('hidden');
+        uploadMode.classList.add('active');
+        cameraMode.classList.add('hidden');
+        cameraMode.classList.remove('active');
+        
+        // Stop camera if active
+        if (cameraManager && cameraManager.isActive) {
+            stopCamera();
+        }
+    } else if (mode === 'camera') {
+        // Switch to camera mode
+        cameraTab.classList.add('active');
+        uploadTab.classList.remove('active');
+        cameraMode.classList.remove('hidden');
+        cameraMode.classList.add('active');
+        uploadMode.classList.add('hidden');
+        uploadMode.classList.remove('active');
+        
+        // Hide drop zone
+        if (!dropZone.classList.contains('hidden')) {
+            dropZone.classList.add('hidden');
+        }
+    }
+}
+
+// Camera Functions
+async function startCamera() {
+    if (!cameraManager) {
+        showError('Camera not initialized');
+        return;
+    }
+    
+    try {
+        startCameraBtn.disabled = true;
+        startCameraBtn.innerHTML = '<span class="btn-icon">⏳</span> Starting...';
+        
+        await cameraManager.startCamera();
+        
+        // Update UI
+        startCameraBtn.classList.add('hidden');
+        captureBtn.classList.remove('hidden');
+        switchCameraBtn.classList.remove('hidden');
+        stopCameraBtn.classList.remove('hidden');
+        
+        // Hide any existing preview
+        imagePreview.classList.add('hidden');
+        
+    } catch (error) {
+        showError(error.message);
+        startCameraBtn.disabled = false;
+        startCameraBtn.innerHTML = '<span class="btn-icon">📷</span> Start Camera';
+    }
+}
+
+async function stopCamera() {
+    if (cameraManager) {
+        cameraManager.stopCamera();
+        
+        // Update UI
+        captureBtn.classList.add('hidden');
+        switchCameraBtn.classList.add('hidden');
+        stopCameraBtn.classList.add('hidden');
+        startCameraBtn.classList.remove('hidden');
+        startCameraBtn.disabled = false;
+        startCameraBtn.innerHTML = '<span class="btn-icon">📷</span> Start Camera';
+    }
+}
+
+async function switchCamera() {
+    if (!cameraManager) return;
+    
+    try {
+        switchCameraBtn.disabled = true;
+        switchCameraBtn.innerHTML = '<span class="btn-icon">⏳</span> Switching...';
+        
+        await cameraManager.switchCamera();
+        
+        switchCameraBtn.disabled = false;
+        switchCameraBtn.innerHTML = '<span class="btn-icon">🔄</span> Switch Camera';
+    } catch (error) {
+        showError('Failed to switch camera: ' + error.message);
+        switchCameraBtn.disabled = false;
+        switchCameraBtn.innerHTML = '<span class="btn-icon">🔄</span> Switch Camera';
+    }
+}
+
+async function capturePhoto() {
+    if (!cameraManager || !cameraManager.isActive) {
+        showError('Camera not active');
+        return;
+    }
+    
+    try {
+        captureBtn.disabled = true;
+        captureBtn.innerHTML = '<span class="btn-icon">⏳</span> Capturing...';
+        
+        // Capture the snapshot
+        const file = await cameraManager.captureSnapshot();
+        
+        // Handle the captured file
+        handleFile(file);
+        
+        // Stop the camera
+        stopCamera();
+        
+        captureBtn.disabled = false;
+        captureBtn.innerHTML = '<span class="btn-icon">📸</span> Capture Photo';
+        
+    } catch (error) {
+        showError('Failed to capture photo: ' + error.message);
+        captureBtn.disabled = false;
+        captureBtn.innerHTML = '<span class="btn-icon">📸</span> Capture Photo';
+    }
 }
 
 // Weather Functions

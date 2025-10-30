@@ -767,6 +767,171 @@ body {
 }
 
 /* Utility Classes */
+/* Camera Mode Styles */
+.upload-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 14px 24px;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.tab-btn:hover {
+    color: var(--primary-color);
+    background: rgba(110, 69, 226, 0.05);
+}
+
+.tab-btn.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+    background: rgba(110, 69, 226, 0.08);
+}
+
+.tab-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.tab-icon {
+    font-size: 18px;
+}
+
+.upload-mode,
+.camera-mode {
+    display: none;
+}
+
+.upload-mode.active,
+.camera-mode.active {
+    display: block;
+}
+
+/* Camera Container */
+.camera-container {
+    background: #f8f9fa;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.camera-view {
+    position: relative;
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto 20px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+.camera-view video {
+    width: 100%;
+    height: auto;
+    display: block;
+    transform: scaleX(-1); /* Mirror effect for front camera */
+}
+
+.camera-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.face-guide {
+    text-align: center;
+}
+
+.guide-circle {
+    width: 280px;
+    height: 350px;
+    border: 3px dashed rgba(255, 255, 255, 0.6);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.3);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        border-color: rgba(255, 255, 255, 0.6);
+        transform: scale(1);
+    }
+    50% {
+        border-color: rgba(110, 69, 226, 0.8);
+        transform: scale(1.02);
+    }
+}
+
+.guide-text {
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 15px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+    background: rgba(0,0,0,0.5);
+    padding: 10px 20px;
+    border-radius: 25px;
+    display: inline-block;
+}
+
+.camera-controls {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.camera-controls .btn {
+    min-width: 150px;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+}
+
+.camera-note {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-style: italic;
+    margin: 0;
+}
+
 .hidden {
     display: none !important;
 }
